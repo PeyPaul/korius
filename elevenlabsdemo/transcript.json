@@ -1,0 +1,43 @@
+{
+  "conversation_id": "interrupted",
+  "agent_id": "agent_8101ka3nmqede8gtxm2gbnjh2tmb",
+  "messages": [
+    {
+      "role": "agent",
+      "text": "Hey there, I'm Alexis from Pharma City, I'm restocking this week I need your advice"
+    },
+    {
+      "role": "user",
+      "text": "Hmm, what kind of products do you want to get?"
+    },
+    {
+      "role": "agent",
+      "text": "Hello! What products do you currently have available for supply?"
+    },
+    {
+      "role": "user",
+      "text": "I'm selling a lot of..."
+    },
+    {
+      "role": "agent",
+      "text": "Could you please specify the product categories you offer? I'm interested in understanding the range of items you can supply to our pharmacy."
+    },
+    {
+      "role": "user",
+      "text": "Headache..."
+    },
+    {
+      "role": "agent",
+      "text": "Thank you. Regarding headache relief products, what specific formulations do you offer, such as tablets, capsules, or topical applications?"
+    },
+    {
+      "role": "user",
+      "text": "Do you need more capsules?"
+    },
+    {
+      "role": "agent",
+      "text": "Yes, capsules are a product type we are interested in. Could you provide details on the active ingredients, strengths, and packaging sizes for your headache relief capsules?"
+    }
+  ],
+  "total_messages": 9
+}
