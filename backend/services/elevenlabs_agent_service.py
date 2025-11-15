@@ -87,7 +87,7 @@ def should_end_conversation(text: str) -> bool:
     return False
 
 
-def call_agent(agent_id: str, api_key: str = None, supplier_name: str = "Inconnu"):
+def call_agent(agent_name: str, api_key: str = None, supplier_name: str = "Inconnu"):
     """
     Call an ElevenLabs conversational agent and return the transcript.
 
@@ -109,6 +109,10 @@ def call_agent(agent_id: str, api_key: str = None, supplier_name: str = "Inconnu
     client = ElevenLabs(api_key=api_key)
 
     # Start conversation with the agent using callbacks to capture transcript
+    if agent_name is "delivery":
+        agent_id = os.getenv("DELIVERY_AGENT_ID")
+    elif agent_name is "products":
+        agent_id = os.getenv("AGENT_PRODUCTS_ID")
     conversation = Conversation(
         client=client,
         agent_id=agent_id,

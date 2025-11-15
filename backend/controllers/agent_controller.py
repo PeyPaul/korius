@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api/agent", tags=["agent"])
 class StartConversationRequest(BaseModel):
     """Request model for starting a conversation."""
 
-    agent_id: Optional[str] = None
+    agent_name: Optional[str] = None
     api_key: Optional[str] = None
     supplier_name: Optional[str] = None
 
@@ -44,21 +44,21 @@ async def start_conversation(request: StartConversationRequest):
         ConversationResponse with conversation details and saved transcript filename
     """
     print("Starting conversation...")
-    agent_id = request.agent_id or os.getenv("AGENT_ID")
+    agent_name = request.agent_name or os.getenv("AGENT_PRODUCTS_ID")
     api_key = request.api_key or os.getenv("ELEVENLABS_API_KEY")
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
     parser = TranscriptParserService(api_key=anthropic_api_key, data_dir="./data")
 
-    if not agent_id or not api_key:
+    if not agent_name or not api_key:
         raise HTTPException(
             status_code=400,
-            detail="Missing AGENT_ID or ELEVENLABS_API_KEY. Please provide in request or set as environment variables.",
+            detail="Missing AGENT_PRODUCTS_ID or ELEVENLABS_API_KEY. Please provide in request or set as environment variables.",
         )
 
     try:
         # Launch the agent conversation
         supplier_name = request.supplier_name or "Inconnu"
-        result = call_agent(agent_id, api_key=api_key, supplier_name=supplier_name)
+        result = call_agent(agent_name, api_key=api_key, supplier_name=supplier_name)
 
         # Parse the conversation - pass the full result dict, not just messages
         _ = parser.parse_and_update_csv(result, supplier_name, save=True)
