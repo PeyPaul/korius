@@ -27,7 +27,7 @@ class ConversationResponse(BaseModel):
     """Response model for conversation result."""
 
     conversation_id: str
-    agent_id: str
+    agent_name: str
     timestamp: str
     total_messages: int
 
@@ -65,7 +65,7 @@ async def start_conversation(request: StartConversationRequest):
 
         return ConversationResponse(
             conversation_id=result["conversation_id"],
-            agent_id=result["agent_id"],
+            agent_name=result["agent_name"],
             timestamp=result["timestamp"],
             total_messages=result["total_messages"],
         )

@@ -109,9 +109,9 @@ def call_agent(agent_name: str, api_key: str = None, supplier_name: str = "Incon
     client = ElevenLabs(api_key=api_key)
 
     # Start conversation with the agent using callbacks to capture transcript
-    if agent_name is "delivery":
-        agent_id = os.getenv("DELIVERY_AGENT_ID")
-    elif agent_name is "products":
+    if agent_name == "delivery":
+        agent_id = os.getenv("AGENT_DELIVERY_ID")
+    else:# agent_name == "products":
         agent_id = os.getenv("AGENT_PRODUCTS_ID")
     conversation = Conversation(
         client=client,
@@ -228,7 +228,7 @@ def save_transcript_on_exit(supplier_name: str = "Inconnu"):
         result = {
             "conversation_id": session_id,
             "supplier_name": supplier_name,
-            "agent_id": os.getenv("AGENT_ID"),
+            "agent_id": os.getenv("AGENT_PRODUCTS_ID"),
             "timestamp": datetime.now().isoformat(),
             "messages": messages,
             "total_messages": len(messages),
