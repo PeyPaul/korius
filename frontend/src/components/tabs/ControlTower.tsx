@@ -73,68 +73,60 @@ const ControlTower = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6 border-l-4 border-l-critical hover:shadow-lg transition-shadow cursor-pointer">
           <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-critical/10 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-critical" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Delivery Risks Resolved</p>
-                <p className="text-3xl font-bold text-foreground mt-1">3</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Saved <strong>28 min</strong> of ETA checks today
-                </p>
-              </div>
+            <div>
+              <p className="text-base font-bold text-foreground">Delivery Risks Resolved</p>
+              <p className="text-3xl font-bold text-foreground mt-1">3</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Saved <strong className="text-critical">28 min</strong> of ETA checks today
+              </p>
+            </div>
+            <div className="p-2 bg-critical/10 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-critical" />
             </div>
           </div>
         </Card>
 
         <Card className="p-6 border-l-4 border-l-moderate hover:shadow-lg transition-shadow cursor-pointer">
           <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-moderate/10 rounded-lg">
-                <Phone className="h-5 w-5 text-moderate" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Supplier Follow-ups Sent</p>
-                <p className="text-3xl font-bold text-foreground mt-1">7</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Avoided <strong>45 min</strong> of calls & emails
-                </p>
-              </div>
+            <div>
+              <p className="text-base font-bold text-foreground">Supplier Follow-ups Sent</p>
+              <p className="text-3xl font-bold text-foreground mt-1">7</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Avoided <strong className="text-moderate">45 min</strong> of calls & emails
+              </p>
+            </div>
+            <div className="p-2 bg-moderate/10 rounded-lg">
+              <Phone className="h-5 w-5 text-moderate" />
             </div>
           </div>
         </Card>
 
         <Card className="p-6 border-l-4 border-l-low hover:shadow-lg transition-shadow cursor-pointer">
           <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-low/10 rounded-lg">
-                <DollarSign className="h-5 w-5 text-low" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Price Checks Completed</p>
-                <p className="text-3xl font-bold text-foreground mt-1">12</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Saved <strong>22 min</strong> on manual lookup
-                </p>
-              </div>
+            <div>
+              <p className="text-base font-bold text-foreground">Price Checks Completed</p>
+              <p className="text-3xl font-bold text-foreground mt-1">12</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Saved <strong className="text-low">22 min</strong> on manual lookup
+              </p>
+            </div>
+            <div className="p-2 bg-low/10 rounded-lg">
+              <DollarSign className="h-5 w-5 text-low" />
             </div>
           </div>
         </Card>
 
         <Card className="p-6 border-l-4 border-l-primary hover:shadow-lg transition-shadow cursor-pointer">
           <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Package className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">New Product Matches</p>
-                <p className="text-3xl font-bold text-foreground mt-1">5</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Replaced <strong>30 min</strong> of market scanning
-                </p>
-              </div>
+            <div>
+              <p className="text-base font-bold text-foreground">New Product Matches</p>
+              <p className="text-3xl font-bold text-foreground mt-1">5</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Replaced <strong className="text-primary">30 min</strong> of market scanning
+              </p>
+            </div>
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Package className="h-5 w-5 text-primary" />
             </div>
           </div>
         </Card>
@@ -142,7 +134,7 @@ const ControlTower = () => {
 
       {/* Daily Agents Recap */}
       <Card className="p-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">AI Agent Activity</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">Daily Agents Recap</h2>
         <div className="space-y-3">
           {/* Active Call - Unrisking Delivery */}
           <div className="border border-border rounded-lg p-4 bg-card hover:bg-accent/5 transition-colors">
@@ -191,7 +183,31 @@ const ControlTower = () => {
                 onClick={() =>
                   handleViewTranscript(
                     "PharmaCore Europe",
-                    "Call transcript showing price updates for 8 products including Paracetamol 500mg (new price: €4.20), Ibuprofen 400mg (new price: €6.80)...",
+                    `AI Agent: Hello, this is calling from your pharmaceutical partner regarding our regular price update check.
+
+Supplier Representative: Yes, hello. I have the updated pricing ready for you.
+
+AI Agent: Perfect. Let me confirm the products we discussed.
+
+Supplier: Here are the updates:
+- Paracetamol 500mg: Previous €3.95, New price €4.20 (6.3% increase due to raw material costs)
+- Ibuprofen 400mg: Previous €6.50, New price €6.80 (4.6% increase)
+- Amoxicillin 250mg: Price remains stable at €12.40
+- Azithromycin 500mg: Previous €18.20, New price €17.80 (2.2% decrease - promotional pricing)
+- Metformin 850mg: Price stable at €5.60
+- Atorvastatin 20mg: Previous €9.30, New price €9.50 (2.2% increase)
+- Omeprazole 20mg: Price stable at €4.10
+- Losartan 50mg: Previous €7.80, New price €8.00 (2.6% increase)
+
+AI Agent: Thank you for the detailed breakdown. I've recorded all updates. The increases are reasonable and within market expectations. When do these new prices take effect?
+
+Supplier: These prices are effective immediately for new orders placed after today.
+
+AI Agent: Understood. I'll update our system accordingly. Is there anything else we should be aware of regarding supply or delivery times?
+
+Supplier: No changes to delivery schedules. Standard 3-5 business days remains in effect.
+
+AI Agent: Excellent. Thank you for your time. I've logged everything and our procurement team will be notified.`,
                   )
                 }
               >
@@ -247,7 +263,41 @@ const ControlTower = () => {
                 onClick={() =>
                   handleViewTranscript(
                     "Market Research",
-                    "Found: Generic Flu Relief Syrup 150ml from HealthPlus Distribution - Price: €8.50 (vs current €10.00), Lead time: 3 days...",
+                    `AI Market Analysis Report - Alternative Supplier Found
+
+Product: Flu Relief Syrup 150ml
+Current Supplier: PharmaBest Ltd
+Current Price: €10.00 per unit
+Current Lead Time: 5-7 days
+
+ALTERNATIVE SUPPLIER IDENTIFIED:
+Supplier: HealthPlus Distribution
+Price: €8.50 per unit
+Savings: €1.50 per unit (15% cost reduction)
+Lead Time: 3 business days
+Minimum Order: 50 units
+Quality Certification: ISO 9001, GMP Certified
+Product Rating: 4.8/5.0 based on 340 reviews
+
+COMPARATIVE ANALYSIS:
+✓ 15% cost savings (€1.50 per unit)
+✓ Faster delivery (2-4 days improvement)
+✓ Same active ingredients: Paracetamol 250mg, Phenylephrine 5mg
+✓ Better packaging (tamper-proof seal)
+✓ Equivalent regulatory compliance
+✓ Established distributor (12 years in business)
+✓ Current stock availability: 2,500+ units
+
+RISK ASSESSMENT: Low
+- Supplier has consistent track record
+- Product specifications match current requirements
+- Positive feedback from 15 verified pharmaceutical buyers
+- Returns rate: 0.3% (industry average: 1.2%)
+
+RECOMMENDATION: Switch supplier
+Annual projected savings based on current order volume (500 units/month): €9,000
+
+Next Steps: Contact HealthPlus Distribution for sample order and formal pricing agreement.`,
                   )
                 }
               >

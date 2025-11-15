@@ -75,41 +75,73 @@ const products = [
     sku: "PARA500",
     name: "Paracetamol 500mg - 16 tablets",
     category: "Pain Relief",
-    stock: 480,
-    weeklyUse: 220,
-    stockoutDate: "2025-03-13",
-    status: "healthy",
-    supplier: "Medisupply SAS"
+    supplier: "Medisupply SAS",
+    type: "in-house",
+    currentPrice: 12.50,
+    bestPrice: 10.90,
+    sellPrice: 18.90,
+    currentMargin: 34,
+    bestMargin: 42
   },
   {
     sku: "IBU400",
     name: "Ibuprofen 400mg - 30 tablets",
     category: "Anti-Inflammatory",
-    stock: 90,
-    weeklyUse: 110,
-    stockoutDate: "2025-02-26",
-    status: "low",
-    supplier: "PharmaCore Europe"
+    supplier: "PharmaCore Europe",
+    type: "in-house",
+    currentPrice: 16.50,
+    bestPrice: 15.20,
+    sellPrice: 24.50,
+    currentMargin: 33,
+    bestMargin: 38
   },
   {
     sku: "AMOX500",
     name: "Amoxicillin 500mg - 12 capsules",
     category: "Antibiotic",
-    stock: 30,
-    weeklyUse: 50,
-    stockoutDate: "2025-02-20",
-    status: "critical",
-    supplier: "BioMed Labs"
+    supplier: "BioMed Labs",
+    type: "in-house",
+    currentPrice: 22.50,
+    bestPrice: 22.50,
+    sellPrice: 32.90,
+    currentMargin: 32,
+    bestMargin: 32
   },
   {
     sku: "FUPLU",
     name: "Flu Relief Syrup 150ml",
     category: "Cold & Flu",
-    stock: 12,
-    weeklyUse: 40,
-    stockoutDate: "2025-02-14",
-    status: "critical",
-    supplier: "Medisupply SAS"
+    supplier: "Medisupply SAS",
+    type: "in-house",
+    currentPrice: 8.75,
+    bestPrice: 7.95,
+    sellPrice: 13.90,
+    currentMargin: 37,
+    bestMargin: 43
+  },
+  {
+    sku: "VITD1000",
+    name: "Vitamin D 1000IU - 60 tablets",
+    category: "Vitamins",
+    supplier: "PharmaCore Europe",
+    type: "external",
+    currentPrice: 0,
+    bestPrice: 14.20,
+    sellPrice: 22.90,
+    currentMargin: 0,
+    bestMargin: 38
+  },
+  {
+    sku: "PROB30",
+    name: "Probiotic Complex - 30 capsules",
+    category: "Supplements",
+    supplier: "BioMed Labs",
+    type: "external",
+    currentPrice: 0,
+    bestPrice: 19.80,
+    sellPrice: 34.90,
+    currentMargin: 0,
+    bestMargin: 43
   }
 ];
 
@@ -205,80 +237,79 @@ const InventoryOrders = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h4 className="font-semibold text-foreground">{product.name}</h4>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-foreground">{product.name}</h4>
+                      {product.type === "external" ? (
+                        <Badge className="bg-blue-50 text-blue-700 border-blue-300">
+                          <Package className="h-3 w-3 mr-1" />
+                          New Opportunity
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-muted/50">
+                          In-House
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground">{product.category}</p>
                   </div>
-                  {product.status === "critical" && (
-                    <Badge variant="destructive" className="flex items-center gap-1">
-                      <AlertTriangle className="h-3 w-3" />
-                      Critical
-                    </Badge>
-                  )}
-                  {product.status === "low" && (
-                    <Badge className="bg-warning text-warning-foreground flex items-center gap-1">
-                      <TrendingDown className="h-3 w-3" />
-                      Low Stock
-                    </Badge>
-                  )}
-                  {product.status === "healthy" && (
-                    <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                      Healthy
-                    </Badge>
-                  )}
                 </div>
 
-                {/* Stock Metrics */}
+                {/* Pricing & Margin Metrics */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Current Stock</p>
-                    <p className="text-lg font-semibold text-foreground">{product.stock}</p>
+                  <div className="bg-primary/5 p-3 rounded-lg border border-primary/10">
+                    <p className="text-xs text-muted-foreground mb-1">Best Available Price</p>
+                    <p className="text-xl font-bold text-primary">€{product.bestPrice.toFixed(2)}</p>
+                    {product.type === "in-house" && product.bestPrice < product.currentPrice && (
+                      <p className="text-xs text-success flex items-center gap-1 mt-1">
+                        <TrendingDown className="h-3 w-3" />
+                        €{(product.currentPrice - product.bestPrice).toFixed(2)} savings
+                      </p>
+                    )}
+                  </div>
+                  <div className="bg-success/5 p-3 rounded-lg border border-success/10">
+                    <p className="text-xs text-muted-foreground mb-1">Best Margin</p>
+                    <p className="text-xl font-bold text-success">{product.bestMargin}%</p>
+                    {product.type === "in-house" && product.bestMargin > product.currentMargin && (
+                      <p className="text-xs text-success flex items-center gap-1 mt-1">
+                        <TrendingUp className="h-3 w-3" />
+                        +{product.bestMargin - product.currentMargin}% potential
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Weekly Use</p>
-                    <p className="text-lg font-semibold text-foreground">{product.weeklyUse}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Sell Price</p>
+                    <p className="text-lg font-semibold text-foreground">€{product.sellPrice.toFixed(2)}</p>
+                    {product.type === "in-house" && (
+                      <p className="text-xs text-muted-foreground mt-1">Current: {product.currentMargin}%</p>
+                    )}
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Stockout Forecast</p>
-                    <p className={`text-sm font-medium ${
-                      product.status === "critical" ? "text-critical" : 
-                      product.status === "low" ? "text-warning" : "text-success"
-                    }`}>
-                      {product.stockoutDate}
+                    <p className="text-xs text-muted-foreground mb-1">Best Supplier</p>
+                    <p className="text-sm font-medium text-foreground">{product.supplier}</p>
+                    {product.type === "external" && (
+                      <p className="text-xs text-blue-600 mt-1">High margin opportunity</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* External product info */}
+                {product.type === "external" && (
+                  <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-sm font-medium text-blue-900 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      High-Margin Expansion Opportunity
+                    </p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      New product with {product.bestMargin}% margin potential • Never purchased before
                     </p>
                   </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Best Supplier</p>
-                    <p className="text-sm font-medium text-foreground">{product.supplier}</p>
-                  </div>
-                </div>
-
-                {/* Stock Progress Bar */}
-                <div className="mt-4">
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full ${
-                        product.status === "critical" ? "bg-critical" : 
-                        product.status === "low" ? "bg-warning" : "bg-success"
-                      }`}
-                      style={{ width: `${Math.min((product.stock / (product.weeklyUse * 4)) * 100, 100)}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {Math.round(product.stock / product.weeklyUse)} weeks of stock remaining
-                  </p>
-                </div>
+                )}
 
                 {/* Actions */}
                 <div className="flex gap-2 mt-4">
                   <Button onClick={() => handleCheckAvailability(product.name)} size="sm" className="flex items-center gap-2">
                     <Phone className="h-3 w-3" />
                     Check Availability
-                  </Button>
-                  <Button onClick={() => handleViewDetails(product)} size="sm" variant="outline">View Details</Button>
-                  <Button onClick={() => handleCreatePO(product)} size="sm" variant="outline">Create PO</Button>
-                  <Button onClick={() => handleSwitchSupplier(product)} size="sm" variant="outline" className="flex items-center gap-2">
-                    <RefreshCw className="h-3 w-3" />
-                    Switch Supplier
                   </Button>
                 </div>
               </div>

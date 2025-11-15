@@ -29,7 +29,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Switch Ibuprofen supplier to MediSupply for 18% cost reduction",
       action: "Apply",
       actionVariant: "default" as const,
-      suggestion: "Switch Ibuprofen supplier"
+      suggestion: "Switch Ibuprofen supplier",
     },
     {
       icon: AlertTriangle,
@@ -40,7 +40,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "HealthChem Imports reliability dropped 23% - consider alternatives",
       action: "Review",
       actionVariant: "outline" as const,
-      suggestion: "Review HealthChem alternatives"
+      suggestion: "Review HealthChem alternatives",
     },
     {
       icon: TrendingUp,
@@ -52,7 +52,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Bulk order Paracetamol quarterly instead of monthly for better pricing",
       action: "Optimize",
       actionVariant: "outline" as const,
-      suggestion: "Adjust Paracetamol ordering"
+      suggestion: "Adjust Paracetamol ordering",
     },
     {
       icon: TrendingUp,
@@ -63,8 +63,8 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "New generic Amoxicillin available from BioMed Labs at 15% lower cost",
       action: "Explore",
       actionVariant: "outline" as const,
-      suggestion: "Explore new Amoxicillin option"
-    }
+      suggestion: "Explore new Amoxicillin option",
+    },
   ];
 
   const inventorySuggestions = [
@@ -77,7 +77,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Aspirin stock will run out in 3 days - reorder immediately",
       action: "Order Now",
       actionVariant: "default" as const,
-      suggestion: "Reorder Aspirin"
+      suggestion: "Reorder Aspirin",
     },
     {
       icon: TrendingUp,
@@ -88,7 +88,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Seasonal flu medication demand expected to increase 35% next month",
       action: "Adjust",
       actionVariant: "outline" as const,
-      suggestion: "Increase flu medication stock"
+      suggestion: "Increase flu medication stock",
     },
     {
       icon: DollarSign,
@@ -100,7 +100,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Vitamin D surplus - reduce next order by 40%",
       action: "Adjust",
       actionVariant: "outline" as const,
-      suggestion: "Reduce Vitamin D order"
+      suggestion: "Reduce Vitamin D order",
     },
     {
       icon: AlertTriangle,
@@ -111,8 +111,8 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "12 items expiring within 30 days - promote or return to supplier",
       action: "Review",
       actionVariant: "outline" as const,
-      suggestion: "Handle expiring items"
-    }
+      suggestion: "Handle expiring items",
+    },
   ];
 
   const suppliersSuggestions = [
@@ -125,7 +125,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "PharmaDirect consistently delivers 2 days early - negotiate volume discount",
       action: "Contact",
       actionVariant: "default" as const,
-      suggestion: "Negotiate with PharmaDirect"
+      suggestion: "Negotiate with PharmaDirect",
     },
     {
       icon: AlertTriangle,
@@ -136,7 +136,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "MedSource late on 60% of deliveries last month - find backup supplier",
       action: "Review",
       actionVariant: "outline" as const,
-      suggestion: "Find MedSource alternative"
+      suggestion: "Find MedSource alternative",
     },
     {
       icon: DollarSign,
@@ -148,7 +148,7 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "Consolidate orders with GlobalMeds for tiered pricing benefits",
       action: "Calculate",
       actionVariant: "outline" as const,
-      suggestion: "Consolidate GlobalMeds orders"
+      suggestion: "Consolidate GlobalMeds orders",
     },
     {
       icon: TrendingUp,
@@ -159,20 +159,22 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
       text: "EuroPharma offering 20% discount for first 3 months - certified supplier",
       action: "Explore",
       actionVariant: "outline" as const,
-      suggestion: "Evaluate EuroPharma offer"
-    }
+      suggestion: "Evaluate EuroPharma offer",
+    },
   ];
 
-  const currentSuggestions = 
-    activeTab === "control-tower" ? controlTowerSuggestions :
-    activeTab === "inventory" ? inventorySuggestions :
-    suppliersSuggestions;
+  const currentSuggestions =
+    activeTab === "control-tower"
+      ? controlTowerSuggestions
+      : activeTab === "inventory"
+        ? inventorySuggestions
+        : suppliersSuggestions;
 
   return (
     <Card className="p-6 sticky top-24 h-fit">
       <div className="flex items-center gap-2 mb-4">
         <Lightbulb className="h-5 w-5 text-primary" />
-        <h3 className="font-semibold text-lg text-foreground">AI Suggestions</h3>
+        <h3 className="font-semibold text-lg text-foreground">Recommendations</h3>
       </div>
 
       <div className="space-y-4">
@@ -187,15 +189,11 @@ const AISuggestions = ({ activeTab }: AISuggestionsProps) => {
                   <Badge variant="outline" className={item.badgeColor}>
                     {item.badge}
                   </Badge>
-                  {item.amount && (
-                    <span className="text-xs text-muted-foreground">{item.amount}</span>
-                  )}
+                  {item.amount && <span className="text-xs text-muted-foreground">{item.amount}</span>}
                 </div>
-                <p className="text-sm text-foreground mb-2">
-                  {item.text}
-                </p>
-                <Button 
-                  size="sm" 
+                <p className="text-sm text-foreground mb-2">{item.text}</p>
+                <Button
+                  size="sm"
                   variant={item.actionVariant}
                   onClick={() => handleApplySuggestion(item.suggestion)}
                   className="w-full"

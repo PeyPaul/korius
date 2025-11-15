@@ -17,7 +17,7 @@ const Index = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">PharmaCockpit</h1>
+              <h1 className="text-2xl font-bold text-foreground">Korius</h1>
               <p className="text-sm text-muted-foreground">AI-Powered Procurement Automation</p>
             </div>
             <nav className="flex items-center gap-1">
@@ -30,19 +30,9 @@ const Index = () => {
                     : "text-muted-foreground hover:text-foreground hover:bg-accent",
                 )}
               >
-                Control Tower
+                Control Center
               </button>
-              <button
-                onClick={() => setActiveTab("inventory")}
-                className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-md transition-colors",
-                  activeTab === "inventory"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent",
-                )}
-              >
-                Inventory & Orders
-              </button>
+
               <button
                 onClick={() => setActiveTab("suppliers")}
                 className={cn(
@@ -52,7 +42,19 @@ const Index = () => {
                     : "text-muted-foreground hover:text-foreground hover:bg-accent",
                 )}
               >
-                Suppliers & ROI
+                Suppliers
+              </button>
+
+              <button
+                onClick={() => setActiveTab("inventory")}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                  activeTab === "inventory"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                )}
+              >
+                Products
               </button>
             </nav>
           </div>
