@@ -88,3 +88,15 @@ class InnovativeProductsResponse(BaseModel):
     products: List[InnovativeProduct]
     total_count: int
     min_suppliers: int
+
+
+class ModifiedProductInformation(BaseModel):
+    """Model for modified product information."""
+
+    product_name: str
+    fournisseur_name: str
+    new_last_information_update: str
+    product_id: str | None = None
+    fournisseur_id: str | None = None
+    new_price: float | None = None
+    new_delivery_time: int | None = None
