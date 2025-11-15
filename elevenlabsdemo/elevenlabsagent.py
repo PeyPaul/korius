@@ -201,7 +201,7 @@ def save_transcript_on_exit():
 
 if __name__ == "__main__":
     # Load from environment variables
-    AGENT_ID = os.getenv("AGENT_ID")
+    AGENT_ID = os.getenv("AGENT_DELIVERY_ID")
     API_KEY = os.getenv("ELEVENLABS_API_KEY")
     
     if not AGENT_ID or not API_KEY:
