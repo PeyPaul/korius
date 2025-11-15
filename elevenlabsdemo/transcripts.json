@@ -1,0 +1,50 @@
+[
+  {
+    "conversation_id": "interrupted",
+    "agent_id": "agent_8101ka3nmqede8gtxm2gbnjh2tmb",
+    "timestamp": "2025-11-15T17:00:49.031690",
+    "messages": [
+      {
+        "role": "agent",
+        "text": "Hey there, I'm Alexis from Pharma City, I'm restocking this week I need your advice"
+      },
+      {
+        "role": "user",
+        "text": "What do you want to buy?"
+      },
+      {
+        "role": "agent",
+        "text": "Hello! What products do you currently have available for supply?"
+      },
+      {
+        "role": "user",
+        "text": "Anything you want."
+      },
+      {
+        "role": "agent",
+        "text": "To help me narrow it down, could you tell me which product categories you specialize in or have readily available stock for?"
+      },
+      {
+        "role": "user",
+        "text": "I said what I said earlier."
+      },
+      {
+        "role": "agent",
+        "text": "I understand you mentioned \"anything you want,\" but to make this process efficient, I need more specific information. Could you please provide a list of the product categories or types of items you supply? For example, do you offer over-the-counter medications, medical devices, or perhaps health and beauty products?"
+      }
+    ],
+    "total_messages": 7
+  },
+  {
+    "conversation_id": "interrupted",
+    "agent_id": "agent_8101ka3nmqede8gtxm2gbnjh2tmb",
+    "timestamp": "2025-11-15T17:01:21.290124",
+    "messages": [
+      {
+        "role": "agent",
+        "text": "Hey there, I'm Alexis from Pharma City, I'm restocking this week I need your advice"
+      }
+    ],
+    "total_messages": 1
+  }
+]
