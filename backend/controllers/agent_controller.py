@@ -22,6 +22,7 @@ class StartConversationRequest(BaseModel):
     agent_name: Optional[str] = None
     api_key: Optional[str] = None
     supplier_name: Optional[str] = None
+    product_name: Optional[str] = None
 
 
 class ConversationResponse(BaseModel):
@@ -76,7 +77,8 @@ async def start_conversation(request: StartConversationRequest):
     agent_name = request.agent_name or "products"  # Default agent name
     api_key = request.api_key or os.getenv("ELEVENLABS_API_KEY")
     supplier_name = request.supplier_name or "Inconnu"
-
+    product_name = request.product_name or "Inconnu"
+    # update_agent(product_name, supplier_name)
     if not api_key:
         raise HTTPException(
             status_code=400,
