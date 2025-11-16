@@ -92,6 +92,55 @@ def should_end_conversation(text: str) -> bool:
 
     return False
 
+def make_outbound_call(
+    agent_id: str,
+    agent_phone_number_id: str,
+    to_number: str,
+    api_key: str = None
+):
+    """
+    Make an outbound call using ElevenLabs Conversational AI via Twilio.
+
+    Args:
+        agent_id: The ID of your ElevenLabs agent
+        agent_phone_number_id: The ID of your Twilio phone number in ElevenLabs
+        to_number: The phone number to call (E.164 format, e.g., +15551234567)
+        api_key: Your ElevenLabs API key (or set ELEVENLABS_API_KEY env var)
+
+    Returns:
+        dict: Call information
+    """
+    if api_key is None:
+        api_key = os.environ.get("ELEVENLABS_API_KEY")
+
+    if not api_key:
+        raise ValueError("ELEVENLABS_API_KEY must be set in .env or passed as parameter")
+
+    # Initialize ElevenLabs client
+    client = ElevenLabs(api_key=api_key)
+
+    print(f"Making outbound call...")
+    print(f"  Agent ID: {agent_id}")
+    print(f"  Agent Phone Number ID: {agent_phone_number_id}")
+    print(f"  To Number: {to_number}")
+
+    # Make the outbound call
+    result = client.conversational_ai.twilio.outbound_call(
+        agent_id=agent_id,
+        agent_phone_number_id=agent_phone_number_id,
+        to_number=to_number
+    )
+
+    print(f"\n✓ Call initiated successfully!")
+    print(f"  Result: {result}")
+
+    # Try to get call_id if it exists as an attribute
+    if hasattr(result, 'call_id'):
+        print(f"  Call ID: {result.call_id}")
+    elif hasattr(result, 'conversation_id'):
+        print(f"  Conversation ID: {result.conversation_id}")
+
+    return result
 
 def call_agent(
     agent_name: str,
@@ -167,7 +216,13 @@ def call_agent(
             print("(Running in background thread - Ctrl+C handler disabled)")
 
     # Start the conversation
-    conversation.start_session()
+    AGENT_PHONE_NUMBER_ID = os.getenv("TWILIO_PHONE_NUMBER_ID")  # You need to add this to .env
+    TO_NUMBER = os.getenv("MY_PHONE_NUMBER")  # You need to add this to .env
+    make_outbound_call(
+        agent_id=agent_id,
+        agent_phone_number_id=AGENT_PHONE_NUMBER_ID,
+        to_number=TO_NUMBER
+    )
 
     # Wait for conversation to complete
     conversation_id = conversation.wait_for_session_end()
