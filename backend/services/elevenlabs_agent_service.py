@@ -78,7 +78,6 @@ def should_end_conversation(text: str) -> bool:
     # Check if the entire message is just a short goodbye/acknowledgment
     short_endings = [
         "thank you for your time",
-        "understood",
         "i understand you need to go",
         "thanks for your time",
     ]
@@ -125,6 +124,8 @@ def call_agent(
     # Start conversation with the agent using callbacks to capture transcript
     if agent_name == "delivery":
         agent_id = os.getenv("AGENT_DELIVERY_ID")
+    elif agent_name == "availability":
+        agent_id = os.getenv("AGENT_AVAILABILITY_ID")
     else:  # agent_name == "products":
         agent_id = os.getenv("AGENT_PRODUCTS_ID")
 

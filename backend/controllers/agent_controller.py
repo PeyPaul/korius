@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from backend.services.conversation_manager import conversation_manager
 from backend.services.elevenlabs_agent_service import start_agent_async
 from backend.services.transcript_parser_service import TranscriptParserService
+from backend.controllers.update_agent import update_agent
 
 load_dotenv()
 
@@ -78,7 +79,14 @@ async def start_conversation(request: StartConversationRequest):
     api_key = request.api_key or os.getenv("ELEVENLABS_API_KEY")
     supplier_name = request.supplier_name or "Inconnu"
     product_name = request.product_name or "Inconnu"
-    # update_agent(product_name, supplier_name)
+
+    # Update agent configuration
+    update_agent(agent_name, product_name, supplier_name)
+
+    # Give ElevenLabs API time to propagate the configuration update
+    import time
+    time.sleep(1)  # Wait 2 seconds for the configuration to propagate
+
     if not api_key:
         raise HTTPException(
             status_code=400,

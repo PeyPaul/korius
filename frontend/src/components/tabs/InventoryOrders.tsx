@@ -165,7 +165,7 @@ const InventoryOrders = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          agent_name: "products",
+          agent_name: "availability",
           product_name: productName,
         }),
       });
