@@ -4,7 +4,7 @@ from typing import Optional
 
 from fastapi import APIRouter
 
-from backend.services.models import CheaperAlternativesResponse
+from backend.services.models import CheaperAlternativesResponse, SupplierROIResponse
 from backend.services.supplier_analysis_service import SupplierAnalysisService
 
 router = APIRouter(prefix="/api/suppliers", tags=["suppliers"])
@@ -36,3 +36,18 @@ async def get_cheaper_alternatives(
         total_count=len(alternatives),
         min_savings_percent=min_savings_percent,
     )
+
+
+@router.get("/roi", response_model=SupplierROIResponse)
+async def get_supplier_roi():
+    """
+    Get supplier ROI and performance metrics.
+
+    Returns:
+        SupplierROIResponse with supplier performance data including:
+        - Performance scores
+        - Monthly spending
+        - Status and trends
+        - Active issues
+    """
+    return supplier_service.get_supplier_roi()

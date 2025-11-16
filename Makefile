@@ -9,6 +9,7 @@ help:
 	@echo "  make dev           - Start both frontend and backend"
 	@echo "  make dev-frontend  - Start only the frontend"
 	@echo "  make dev-backend   - Start only the backend"
+	@echo "  make generate-fake-data - Generate fake data"
 	@echo "  make help          - Show this help message"
 
 # Install all dependencies
@@ -54,3 +55,8 @@ dev-backend:
 	@echo "API docs available at http://localhost:8000/docs"
 	@cd backend && source .venv/bin/activate &&  cd .. && uvicorn backend.api.main:app --reload --port 8000
 
+
+# Generate fake data
+generate-fake-data:
+	@echo "Generating fake data..."
+	@cd data && python generate_fake_data.py

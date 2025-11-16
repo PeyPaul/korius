@@ -75,7 +75,7 @@ def generate_fournisseurs(n=50):
         "Pharmaceutical Direct",
     ]
 
-    for i in range(1, n + 1):
+    for _ in range(1, n + 1):
         # Generate UUID with supp_ prefix
         supplier_id = f"supp_{uuid.uuid4()}"
         name = (
@@ -239,62 +239,366 @@ def generate_available_products(
 
 
 # Generate Orders
-def generate_orders(available_products_df, n=100):
-    """Generate fake order data.
-    
+def generate_orders(available_products_df, fournisseur_df, in_store_products_df, n=200):
+    """Generate fake order data with diverse supplier performance.
+
+    Creates good and bad suppliers based on:
+    - Delivery performance (on-time vs late)
+    - Order volume (number and size of orders)
+    - Order recency (more recent orders for good suppliers)
+
     Args:
         available_products_df: DataFrame of available products
+        fournisseur_df: DataFrame of suppliers
+        in_store_products_df: DataFrame of in-store products
         n: Number of orders to generate
-    
+
     Returns:
-        DataFrame with columns: order_id, product_name, quantity, fournisseur_id, 
+        DataFrame with columns: order_id, product_name, quantity, fournisseur_id,
                                estimated_time_arrival, time_of_arrival, order_date
     """
     orders = []
-    
-    for i in range(n):
-        # Select a random product from available products
-        product_entry = available_products_df.sample(1).iloc[0]
-        
+
+    # Categorize suppliers into performance tiers
+    # Get suppliers that are actually used in in_store_products
+    used_suppliers = set(in_store_products_df["fournisseur_id"].unique())
+    supplier_list = fournisseur_df[fournisseur_df["id"].isin(used_suppliers)][
+        "id"
+    ].tolist()
+
+    if not supplier_list:
+        # Fallback: use all suppliers
+        supplier_list = fournisseur_df["id"].tolist()
+
+    # Divide suppliers into tiers
+    # Exactly 5 very bad suppliers, rest distributed among excellent, good, fair
+    random.shuffle(supplier_list)
+    n_suppliers = len(supplier_list)
+
+    # Select exactly 5 very bad suppliers
+    num_warning = min(5, n_suppliers)
+    warning_suppliers = set(supplier_list[:num_warning])
+    remaining_suppliers = supplier_list[num_warning:]
+
+    # Distribute remaining suppliers: 25% excellent, 35% good, 40% fair
+    n_remaining = len(remaining_suppliers)
+    excellent_suppliers = set(remaining_suppliers[: int(n_remaining * 0.25)])
+    good_suppliers = set(
+        remaining_suppliers[int(n_remaining * 0.25) : int(n_remaining * 0.60)]
+    )
+    fair_suppliers = set(remaining_suppliers[int(n_remaining * 0.60) :])
+
+    # Create supplier performance profiles
+    supplier_profiles = {}
+    for supp_id in excellent_suppliers:
+        supplier_profiles[supp_id] = {
+            "on_time_rate": 0.95,  # 95% on-time
+            "avg_delay_days": -1,  # Often early or on-time
+            "delay_range": (-3, 1),  # Early to slightly late
+            "order_frequency": 0.25,  # 25% of orders
+            "quantity_range": (100, 500),  # Larger orders
+            "recent_order_rate": 0.6,  # 60% of orders in last 30 days
+        }
+    for supp_id in good_suppliers:
+        supplier_profiles[supp_id] = {
+            "on_time_rate": 0.85,  # 85% on-time
+            "avg_delay_days": 0,  # Usually on-time
+            "delay_range": (-2, 2),
+            "order_frequency": 0.30,  # 30% of orders
+            "quantity_range": (50, 400),
+            "recent_order_rate": 0.5,  # 50% of orders in last 30 days
+        }
+    for supp_id in fair_suppliers:
+        supplier_profiles[supp_id] = {
+            "on_time_rate": 0.70,  # 70% on-time
+            "avg_delay_days": 2,  # Often slightly late
+            "delay_range": (-1, 4),
+            "order_frequency": 0.30,  # 30% of orders
+            "quantity_range": (30, 300),
+            "recent_order_rate": 0.3,  # 30% of orders in last 30 days
+        }
+    for supp_id in warning_suppliers:
+        supplier_profiles[supp_id] = {
+            "on_time_rate": 0.50,  # 50% on-time (many late deliveries)
+            "avg_delay_days": 4,  # Often late
+            "delay_range": (0, 8),  # Often late, rarely early
+            "order_frequency": 0.15,  # 15% of orders (fewer orders)
+            "quantity_range": (10, 200),  # Smaller orders
+            "recent_order_rate": 0.1,  # 10% of orders in last 30 days (inactive)
+        }
+
+    # Generate orders weighted by supplier performance
+    supplier_weights = []
+    supplier_ids = []
+    for supp_id, profile in supplier_profiles.items():
+        # Get products available from this supplier
+        supplier_products = available_products_df[
+            available_products_df["fournisseur"] == supp_id
+        ]
+        if len(supplier_products) > 0:
+            supplier_ids.append(supp_id)
+            # Weight by order_frequency
+            supplier_weights.append(profile["order_frequency"] * len(supplier_products))
+
+    # Normalize weights
+    total_weight = sum(supplier_weights)
+    if total_weight > 0:
+        supplier_weights = [w / total_weight for w in supplier_weights]
+
+    # Ensure minimum monthly spend for all suppliers
+    min_orders_per_supplier = (
+        2  # Minimum orders per supplier (at least 2 recent orders)
+    )
+
+    # Create a mapping of products in in_store_products by supplier
+    # This ensures orders match what the analysis service expects
+    in_store_by_supplier = {}
+    for _, row in in_store_products_df.iterrows():
+        supp_id = row["fournisseur_id"]
+        if supp_id not in in_store_by_supplier:
+            in_store_by_supplier[supp_id] = []
+        in_store_by_supplier[supp_id].append(row)
+
+    # First, generate minimum orders for each supplier to ensure monthly spend
+    for supp_id in supplier_ids:
+        profile = supplier_profiles.get(
+            supp_id,
+            {
+                "on_time_rate": 0.7,
+                "avg_delay_days": 1,
+                "delay_range": (-2, 5),
+                "order_frequency": 0.2,
+                "quantity_range": (50, 300),  # Reasonable minimum quantity
+                "recent_order_rate": 1.0,  # All minimum orders should be recent
+            },
+        )
+
+        # Get products from in_store_products for this supplier (to ensure spend is calculated)
+        supplier_in_store_products = in_store_by_supplier.get(supp_id, [])
+
+        if len(supplier_in_store_products) == 0:
+            # Fallback: try to find products from available_products
+            supplier_products = available_products_df[
+                available_products_df["fournisseur"] == supp_id
+            ]
+            if len(supplier_products) == 0:
+                continue
+            # Use available products as fallback
+            product_list = supplier_products.to_dict("records")
+        else:
+            # Use in_store products (preferred for spend calculation)
+            product_list = supplier_in_store_products
+
+        for _ in range(min_orders_per_supplier):
+            # Select a random product from the list
+            product_entry = random.choice(product_list)
+            order_id = f"order_{uuid.uuid4()}"
+            # Use profile quantity range, but ensure minimum quantity for monthly spend
+            qty_min, qty_max = profile["quantity_range"]
+            quantity = random.randint(max(50, qty_min), qty_max)  # At least 50 units
+
+            # Recent order (last 30 days) to ensure monthly spend
+            days_ago = random.randint(1, 30)
+            order_date = datetime.now() - timedelta(days=days_ago)
+
+            # Get delivery time from available_products or use default
+            # Handle both dict and Series/DataFrame row formats
+            if isinstance(product_entry, dict):
+                product_name = product_entry["name"]
+            else:
+                product_name = (
+                    product_entry.get("name", "")
+                    if hasattr(product_entry, "get")
+                    else product_entry["name"]
+                )
+
+            available_product = available_products_df[
+                (available_products_df["name"] == product_name)
+                & (available_products_df["fournisseur"] == supp_id)
+            ]
+            if len(available_product) > 0:
+                estimated_delivery_days = int(
+                    available_product.iloc[0]["delivery_time"]
+                )
+            else:
+                estimated_delivery_days = random.randint(1, 14)  # Default
+            estimated_time_arrival = order_date + timedelta(
+                days=estimated_delivery_days
+            )
+
+            # Most minimum orders should be delivered (on-time or late based on supplier)
+            should_have_arrived = order_date < datetime.now() - timedelta(
+                days=estimated_delivery_days
+            )
+
+            if should_have_arrived and random.random() < profile["on_time_rate"]:
+                delay = random.randint(*profile["delay_range"])
+                time_of_arrival = estimated_time_arrival + timedelta(days=delay)
+                if time_of_arrival > datetime.now():
+                    time_of_arrival = datetime.now() - timedelta(
+                        days=random.randint(1, 3)
+                    )
+            elif should_have_arrived:
+                delay = random.randint(
+                    profile["delay_range"][0] + 1, profile["delay_range"][1] + 3
+                )
+                time_of_arrival = estimated_time_arrival + timedelta(days=delay)
+                if time_of_arrival > datetime.now():
+                    time_of_arrival = datetime.now() - timedelta(
+                        days=random.randint(1, 2)
+                    )
+            else:
+                time_of_arrival = None
+
+            orders.append(
+                {
+                    "order_id": order_id,
+                    "product_name": product_name,
+                    "quantity": quantity,
+                    "fournisseur_id": supp_id,
+                    "estimated_time_arrival": estimated_time_arrival.strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
+                    "time_of_arrival": time_of_arrival.strftime("%Y-%m-%d %H:%M:%S")
+                    if time_of_arrival
+                    else None,
+                    "order_date": order_date.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+            )
+
+    # Now generate the remaining orders weighted by supplier performance
+    remaining_orders = n - len(orders)
+    for _ in range(remaining_orders):
+        # Select supplier based on weights
+        if supplier_ids and supplier_weights:
+            selected_supplier_id = random.choices(
+                supplier_ids, weights=supplier_weights
+            )[0]
+        else:
+            # Fallback: random selection
+            product_entry = available_products_df.sample(1).iloc[0]
+            selected_supplier_id = product_entry["fournisseur"]
+
+        profile = supplier_profiles.get(
+            selected_supplier_id,
+            {
+                "on_time_rate": 0.7,
+                "avg_delay_days": 1,
+                "delay_range": (-2, 5),
+                "order_frequency": 0.2,
+                "quantity_range": (10, 500),
+                "recent_order_rate": 0.4,
+            },
+        )
+
+        # Get products from in_store_products for this supplier (to ensure spend is calculated)
+        supplier_in_store_products = in_store_by_supplier.get(selected_supplier_id, [])
+
+        if len(supplier_in_store_products) == 0:
+            # Fallback: try available_products
+            supplier_products = available_products_df[
+                available_products_df["fournisseur"] == selected_supplier_id
+            ]
+            if len(supplier_products) == 0:
+                # Last resort: any product
+                product_entry = available_products_df.sample(1).iloc[0]
+            else:
+                product_entry = supplier_products.sample(1).iloc[0]
+        else:
+            # Use in_store products (preferred for spend calculation)
+            product_entry = random.choice(supplier_in_store_products)
+
         # Generate order ID
         order_id = f"order_{uuid.uuid4()}"
-        
-        # Quantity between 10 and 500 units
-        quantity = random.randint(10, 500)
-        
-        # Order date between 1 and 180 days ago
-        days_ago = random.randint(1, 180)
+
+        # Quantity based on supplier tier
+        quantity = random.randint(*profile["quantity_range"])
+
+        # Order date: more recent orders for better suppliers
+        if random.random() < profile["recent_order_rate"]:
+            # Recent order (last 30 days)
+            days_ago = random.randint(1, 30)
+        else:
+            # Older order (31-180 days ago)
+            days_ago = random.randint(31, 180)
+
         order_date = datetime.now() - timedelta(days=days_ago)
-        
-        # Estimated delivery time from the product's delivery_time (convert to int)
-        estimated_delivery_days = int(product_entry['delivery_time'])
+
+        # Estimated delivery time from available_products or use default
+        product_name = (
+            product_entry["name"]
+            if isinstance(product_entry, dict)
+            else product_entry.get("name", "")
+        )
+        available_product = available_products_df[
+            (available_products_df["name"] == product_name)
+            & (available_products_df["fournisseur"] == selected_supplier_id)
+        ]
+        if len(available_product) > 0:
+            estimated_delivery_days = int(available_product.iloc[0]["delivery_time"])
+        else:
+            estimated_delivery_days = random.randint(1, 14)  # Default
+
         estimated_time_arrival = order_date + timedelta(days=estimated_delivery_days)
-        
-        # Time of arrival: 
-        # - 70% of orders have arrived (time_of_arrival is filled)
-        # - 30% are still pending (time_of_arrival is None/NaT)
-        # For delivered orders, actual arrival can be early (-2 days) or late (+5 days)
-        if random.random() < 0.7 and order_date < datetime.now() - timedelta(days=estimated_delivery_days):
-            # Order has been delivered
-            delay = random.randint(-2, 5)  # Can be early or late
+
+        # Time of arrival based on supplier performance
+        # Check if order should have arrived by now
+        should_have_arrived = order_date < datetime.now() - timedelta(
+            days=estimated_delivery_days
+        )
+
+        if should_have_arrived and random.random() < profile["on_time_rate"]:
+            # Order has been delivered (on-time or early)
+            delay = random.randint(*profile["delay_range"])
             time_of_arrival = estimated_time_arrival + timedelta(days=delay)
             # Make sure arrival is not in the future
             if time_of_arrival > datetime.now():
                 time_of_arrival = datetime.now() - timedelta(days=random.randint(1, 3))
+        elif should_have_arrived:
+            # Order is late (delivered but late)
+            delay = random.randint(
+                profile["delay_range"][0] + 1, profile["delay_range"][1] + 3
+            )
+            time_of_arrival = estimated_time_arrival + timedelta(days=delay)
+            if time_of_arrival > datetime.now():
+                time_of_arrival = datetime.now() - timedelta(days=random.randint(1, 2))
         else:
-            # Order is still pending
-            time_of_arrival = None
-        
-        orders.append({
-            'order_id': order_id,
-            'product_name': product_entry['name'],
-            'quantity': quantity,
-            'fournisseur_id': product_entry['fournisseur'],
-            'estimated_time_arrival': estimated_time_arrival.strftime('%Y-%m-%d %H:%M:%S'),
-            'time_of_arrival': time_of_arrival.strftime('%Y-%m-%d %H:%M:%S') if time_of_arrival else None,
-            'order_date': order_date.strftime('%Y-%m-%d %H:%M:%S')
-        })
-    
+            # Order is still pending (not yet due)
+            if random.random() < 0.3:  # 30% chance of pending orders
+                time_of_arrival = None
+            else:
+                # Some pending orders might actually be delivered early
+                delay = random.randint(-2, 0)
+                time_of_arrival = estimated_time_arrival + timedelta(days=delay)
+                if time_of_arrival > datetime.now():
+                    time_of_arrival = None
+
+        # Get product name (handle both dict and Series)
+        if isinstance(product_entry, dict):
+            product_name = product_entry["name"]
+        else:
+            product_name = (
+                product_entry.get("name", "")
+                if hasattr(product_entry, "get")
+                else product_entry["name"]
+            )
+
+        orders.append(
+            {
+                "order_id": order_id,
+                "product_name": product_name,
+                "quantity": quantity,
+                "fournisseur_id": selected_supplier_id,
+                "estimated_time_arrival": estimated_time_arrival.strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),
+                "time_of_arrival": time_of_arrival.strftime("%Y-%m-%d %H:%M:%S")
+                if time_of_arrival
+                else None,
+                "order_date": order_date.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
+
     return pd.DataFrame(orders)
 
 
@@ -371,9 +675,9 @@ if __name__ == "__main__":
     # Generate in_store_products as a subset of available_products
     # Each product name appears only once with one supplier, price matches available_products
     in_store_products = generate_in_store_products(available_products, 200)
-    
-    # Generate orders based on available products
-    orders = generate_orders(available_products, 100)
+
+    # Generate orders based on available products with diverse supplier performance
+    orders = generate_orders(available_products, fournisseurs, in_store_products, 200)
 
     # Save to CSV files
     fournisseurs.to_csv("fournisseur.csv", index=False)

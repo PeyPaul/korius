@@ -65,6 +65,13 @@ class DataLoader:
         """Load available products as Pydantic models."""
         if self._available_products_models is None:
             df = self.load_available_products()
+            # Clean delivery_time: fill NaN with default 7 days, ensure it's int and within valid range
+            if "delivery_time" in df.columns:
+                df["delivery_time"] = pd.to_numeric(df["delivery_time"], errors="coerce")
+                df["delivery_time"] = df["delivery_time"].fillna(7.0)
+                df["delivery_time"] = df["delivery_time"].clip(lower=1, upper=14)
+                df["delivery_time"] = df["delivery_time"].astype(int)
+            
             self._available_products_models = [
                 AvailableProduct(**row) for row in df.to_dict("records")
             ]
@@ -78,6 +85,11 @@ class DataLoader:
                 Fournisseur(**row) for row in df.to_dict("records")
             ]
         return self._fournisseurs_models
+
+    def load_orders(self) -> pd.DataFrame:
+        """Load orders CSV as DataFrame."""
+        file_path = self.data_dir / "orders.csv"
+        return pd.read_csv(file_path)
 
     def reload_all(self):
         """Reload all data from CSV files."""
