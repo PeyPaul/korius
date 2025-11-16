@@ -108,8 +108,34 @@ class Order(BaseModel):
     quantity: int = Field(ge=1, description="Quantity ordered")
     fournisseur_id: str
     estimated_time_arrival: str
-    time_of_arrival: Optional[str] = Field(None, description="Actual arrival time, None if not yet delivered")
+    time_of_arrival: Optional[str] = Field(
+        None, description="Actual arrival time, None if not yet delivered"
+    )
     order_date: str
 
     new_price: float | None = None
     new_delivery_time: int | None = None
+
+
+class SupplierROI(BaseModel):
+    """Model for supplier ROI and performance metrics."""
+
+    id: str
+    name: str
+    performance: float = Field(ge=0, le=100, description="Performance score (0-100)")
+    monthly_spend: float = Field(ge=0, description="Monthly spending in euros")
+    status: str = Field(description="Status: excellent, good, fair, warning")
+    trend: str = Field(description="Trend: up, stable, down")
+    issues: List[str] = Field(default_factory=list, description="List of active issues")
+    phone_number: str
+
+
+class SupplierROIResponse(BaseModel):
+    """Response model for supplier ROI endpoint."""
+
+    suppliers: List[SupplierROI]
+    total_count: int
+    total_monthly_spend: float
+    avg_performance: float
+    excellent_count: int
+    warning_count: int

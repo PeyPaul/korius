@@ -1,96 +1,40 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TrendingUp, TrendingDown, Phone, DollarSign, Target, Package, AlertCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, Phone, DollarSign, Target, Package, AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-const suppliers = [
-  {
-    id: 1,
-    name: "Medisupply SAS",
-    performance: 94,
-    monthlySpend: 8200,
-    status: "excellent",
-    trend: "up",
-    issues: [],
-  },
-  {
-    id: 2,
-    name: "PharmaCore Europe",
-    performance: 82,
-    monthlySpend: 3100,
-    status: "good",
-    trend: "stable",
-    issues: [],
-  },
-  {
-    id: 3,
-    name: "BioMed Labs",
-    performance: 78,
-    monthlySpend: 1500,
-    status: "good",
-    trend: "up",
-    issues: [],
-  },
-  {
-    id: 4,
-    name: "HealthChem Imports",
-    performance: 63,
-    monthlySpend: 400,
-    status: "warning",
-    trend: "down",
-    issues: ["Late Deliveries", "Quality Issues", "Price Increases"],
-  },
-  {
-    id: 5,
-    name: "MediTech Solutions",
-    performance: 88,
-    monthlySpend: 5600,
-    status: "excellent",
-    trend: "up",
-    issues: [],
-  },
-  {
-    id: 6,
-    name: "Global Pharma Inc",
-    performance: 71,
-    monthlySpend: 2800,
-    status: "fair",
-    trend: "stable",
-    issues: [],
-  },
-  {
-    id: 7,
-    name: "EuroDrug Supply",
-    performance: 85,
-    monthlySpend: 4200,
-    status: "good",
-    trend: "up",
-    issues: [],
-  },
-  {
-    id: 8,
-    name: "QuickMed Logistics",
-    performance: 67,
-    monthlySpend: 1900,
-    status: "warning",
-    trend: "down",
-    issues: ["Communication Delays", "Stock Shortages", "Documentation Errors"],
-  },
-  {
-    id: 9,
-    name: "Prime Health Partners",
-    performance: 92,
-    monthlySpend: 6100,
-    status: "excellent",
-    trend: "up",
-    issues: [],
-  },
-];
+import { suppliersApi, SupplierROIResponse } from "@/lib/api";
 
 const SuppliersROI = () => {
   const { toast } = useToast();
+  const [data, setData] = useState<SupplierROIResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await suppliersApi.getSupplierROI();
+        setData(response);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to load supplier data";
+        setError(errorMessage);
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [toast]);
 
   const handleUpdateCatalog = (supplierName: string) => {
     toast({
@@ -106,10 +50,31 @@ const SuppliersROI = () => {
     });
   };
 
-  const totalSpend = suppliers.reduce((sum, s) => sum + s.monthlySpend, 0);
-  const avgPerformance = Math.round(suppliers.reduce((sum, s) => sum + s.performance, 0) / suppliers.length);
-  const excellentSuppliers = suppliers.filter((s) => s.status === "excellent").length;
-  const warningSuppliers = suppliers.filter((s) => s.status === "warning").length;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="text-center text-muted-foreground">
+            {error || "No data available"}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const suppliers = data.suppliers;
+  const totalSpend = data.total_monthly_spend;
+  const avgPerformance = Math.round(data.avg_performance);
+  const excellentSuppliers = data.excellent_count;
+  const warningSuppliers = data.warning_count;
 
   return (
     <div className="space-y-6">
@@ -128,7 +93,7 @@ const SuppliersROI = () => {
                 <DollarSign className="h-4 w-4" />
                 Total Monthly Spend
               </p>
-              <p className="text-2xl font-bold">€{totalSpend.toLocaleString()}</p>
+              <p className="text-2xl font-bold">€{totalSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground flex items-center gap-1">
@@ -157,7 +122,7 @@ const SuppliersROI = () => {
               <strong>Strategic Insight:</strong> {excellentSuppliers} suppliers are performing exceptionally well,
               accounting for{" "}
               {Math.round(
-                (suppliers.filter((s) => s.status === "excellent").reduce((sum, s) => sum + s.monthlySpend, 0) /
+                (suppliers.filter((s) => s.status === "excellent").reduce((sum, s) => sum + s.monthly_spend, 0) /
                   totalSpend) *
                   100,
               )}
@@ -197,7 +162,7 @@ const SuppliersROI = () => {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Monthly Spend</span>
-                        <span className="font-semibold">€{supplier.monthlySpend.toLocaleString()}</span>
+                        <span className="font-semibold">€{supplier.monthly_spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                       </div>
                     </div>
 
@@ -287,7 +252,7 @@ const SuppliersROI = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Monthly Spend</span>
-                  <span className="font-semibold">€{supplier.monthlySpend.toLocaleString()}</span>
+                  <span className="font-semibold">€{supplier.monthly_spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </div>
 
