@@ -3,9 +3,111 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TrendingUp, TrendingDown, Phone, DollarSign, Target, Package, AlertCircle, Loader2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
+import { TrendingUp, TrendingDown, Phone, DollarSign, Target, Package, AlertCircle, Loader2, ChevronDown, ChevronUp, Truck, Tag, ShoppingCart, Boxes, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { suppliersApi, SupplierROIResponse } from "@/lib/api";
+import { suppliersApi, SupplierROIResponse, PerformanceBreakdown } from "@/lib/api";
+
+// Component to display performance breakdown
+const PerformanceBreakdownView = ({ breakdown }: { breakdown: PerformanceBreakdown }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+      <CollapsibleTrigger asChild>
+        <Button variant="ghost" size="sm" className="w-full justify-between">
+          <span className="flex items-center gap-2">
+            <Info className="h-4 w-4" />
+            Performance Details
+          </span>
+          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="space-y-4 pt-4">
+        <div className="text-xs text-muted-foreground mb-3 p-2 bg-muted/50 rounded">
+          Performance is calculated as: Delivery (40%) + Price (30%) + Volume (20%) + Diversity (10%)
+        </div>
+
+        {/* Delivery Performance */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Truck className="h-4 w-4 text-blue-600" />
+              <span className="text-sm font-semibold">Delivery Performance (40%)</span>
+            </div>
+            <span className={`text-sm font-bold ${getScoreColor(breakdown.delivery_score)}`}>
+              {breakdown.delivery_score.toFixed(1)}%
+            </span>
+          </div>
+          <Progress value={breakdown.delivery_score} className="h-2" />
+          <div className="text-xs text-muted-foreground grid grid-cols-3 gap-2">
+            <span>On-time: {breakdown.delivery_on_time}</span>
+            <span>Late: {breakdown.delivery_late}</span>
+            <span>Rate: {breakdown.delivery_on_time_rate.toFixed(1)}%</span>
+          </div>
+        </div>
+
+        {/* Price Competitiveness */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Tag className="h-4 w-4 text-purple-600" />
+              <span className="text-sm font-semibold">Price Competitiveness (30%)</span>
+            </div>
+            <span className={`text-sm font-bold ${getScoreColor(breakdown.price_score)}`}>
+              {breakdown.price_score.toFixed(1)}%
+            </span>
+          </div>
+          <Progress value={breakdown.price_score} className="h-2" />
+          <div className="text-xs text-muted-foreground">
+            {breakdown.price_cheaper_alternatives} cheaper alternatives found across {breakdown.price_product_count} products
+          </div>
+        </div>
+
+        {/* Order Volume */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="h-4 w-4 text-orange-600" />
+              <span className="text-sm font-semibold">Order Volume (20%)</span>
+            </div>
+            <span className={`text-sm font-bold ${getScoreColor(breakdown.volume_score)}`}>
+              {breakdown.volume_score.toFixed(1)}%
+            </span>
+          </div>
+          <Progress value={breakdown.volume_score} className="h-2" />
+          <div className="text-xs text-muted-foreground">
+            Monthly spend: €{breakdown.volume_monthly_spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+
+        {/* Product Diversity */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Boxes className="h-4 w-4 text-teal-600" />
+              <span className="text-sm font-semibold">Product Diversity (10%)</span>
+            </div>
+            <span className={`text-sm font-bold ${getScoreColor(breakdown.diversity_score)}`}>
+              {breakdown.diversity_score.toFixed(1)}%
+            </span>
+          </div>
+          <Progress value={breakdown.diversity_score} className="h-2" />
+          <div className="text-xs text-muted-foreground">
+            {breakdown.diversity_product_count} unique products
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
 
 const SuppliersROI = () => {
   const { toast } = useToast();
@@ -182,6 +284,12 @@ const SuppliersROI = () => {
                       </div>
                     )}
 
+                    {supplier.performance_breakdown && (
+                      <div className="pt-2 border-t border-amber-200">
+                        <PerformanceBreakdownView breakdown={supplier.performance_breakdown} />
+                      </div>
+                    )}
+
                     <div className="flex justify-center pt-2">
                       <Popover>
                         <PopoverTrigger asChild>
@@ -255,6 +363,12 @@ const SuppliersROI = () => {
                   <span className="font-semibold">€{supplier.monthly_spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </div>
+
+              {supplier.performance_breakdown && (
+                <div className="pt-2 border-t">
+                  <PerformanceBreakdownView breakdown={supplier.performance_breakdown} />
+                </div>
+              )}
 
               <div className="flex justify-center pt-2">
                 <Popover>

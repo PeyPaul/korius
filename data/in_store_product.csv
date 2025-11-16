@@ -1,6 +1,66 @@
 id,name,price,fournisseur_id,stock
-prod_aaf13583-9e35-4b75-97da-3b13359d2619,Doxycycline 100mg,28.02,supp_cd5cc946-ec2f-40cb-938f-adcdf099a753,344
-prod_8ceaca46-a054-47c9-a0b1-07759f0f7981,Brosse à Dents,27.84,supp_e9f88b78-04b9-4a47-a77b-ab1a813fd7b1,134
-prod_92e25d40-8828-40ec-938a-1d779a7fb65c,Mélatonine 1mg,19.05,supp_dafaa34b-b770-4089-86ae-8060ed741725,299
-prod_5d40e1b8-e387-4e02-b733-4542ed0ad019,Alcool à 70°,37.67,supp_cad910e5-8fe8-4e8a-8287-9b661998e580,195
-prod_b9e04124-dd34-4085-ba8a-a58288ced7c9,Montélukast 10mg,64.39,supp_477de6c3-c4df-4a68-97b0-bba2ca53bb36,326
+prod_0d46eaaa-f2a7-43f9-a1a6-683b82d4a7d2,Savon Dermatologique,12.8,supp_5bd2b1cf-373b-4c1f-90bb-b3ec647c1f03,135
+prod_88b7d02a-3630-4175-a533-b5e90d7e1312,Crème Solaire SPF50,39.63,supp_83b951a8-cd41-47f0-98d5-7ebc8cd35eb7,274
+prod_d7eaddf8-5029-4b7e-aeea-0cd0292b506e,Sirop Toux Grasse,139.39,supp_07647921-cb8b-4580-b1c3-22413cc45dd2,63
+prod_acfbe29c-aa90-4907-911e-3202fd85bccc,Sérum Physiologique,57.43,supp_c8b0d807-4c37-47c5-b7e1-82e1bc96004b,232
+prod_88c1859e-d20a-4cea-a9c3-94ecd21f0e64,Bain de Bouche Antiseptique,152.44,supp_5bd2b1cf-373b-4c1f-90bb-b3ec647c1f03,188
+prod_88b46e88-21f7-4d5f-afbb-c1258776b7ea,Lansoprazole 30mg,37.43,supp_f75883d9-3f63-46de-a047-fa0df60f9fe4,344
+prod_8391426b-9280-41a3-b8d9-f72894f2bda9,Ibuprofène 400mg,119.58,supp_609be8c9-dfe5-45cd-b00a-54eee272c7e8,383
+prod_4e562ae1-4a8d-4306-8ab3-c775952a0c96,Doxycycline 100mg,28.02,supp_d1bef76a-ab78-451e-827d-e0eb941416bc,344
+prod_9d0ca185-42f7-4f9c-8ae4-10da686182b8,Brosse à Dents,27.84,supp_f0fed132-544a-42e3-8391-96b627a37dc4,134
+prod_421f2616-ec94-4252-ad13-e0fb68f0642a,Mélatonine 1mg,128.33,supp_39332abb-9170-40a7-b9e4-b0d3e63ea424,299
+prod_dd39a468-3583-433b-9485-b867c45c381d,Alcool à 70°,37.67,supp_38ec6da5-d8e6-4609-8056-5112dc2329d5,195
+prod_d46bdd17-749f-4a71-a217-1756b896bc42,Paracétamol 500mg,95.03,supp_380511cb-8d24-4fa9-a0c9-30fc8cec41f6,421
+prod_3ac95ec2-e1f3-4410-8c1e-a239aa358835,Montélukast 10mg,64.39,supp_2184357d-70cb-457e-bb3d-fc2242ad95a1,326
+prod_ff3001ae-2154-4287-9737-19be4e6d53c7,Fil Dentaire,23.49,supp_07647921-cb8b-4580-b1c3-22413cc45dd2,481
+prod_63446678-4505-454e-8ee5-7c68df3f08a9,Crème Réparatrice Mains,127.69,supp_31cc3ce5-cbe1-4f32-9c42-88d3cf11c319,190
+prod_2d6f0d3c-6024-4628-90be-7cd0218cf98e,Shampoing Antipelliculaire,37.77,supp_7225db0a-18f0-43cd-8894-6d5c6e364fbd,55
+prod_56b5613e-ee27-4c22-8cba-a433ef84899c,Doliprane 1000mg,82.29,supp_f75883d9-3f63-46de-a047-fa0df60f9fe4,345
+prod_d2022829-4b77-416f-b5c4-117f0ea7d4a9,Spray Nasal Salin,35.88,supp_e5b4ca81-a77e-42b2-9800-0255eda60183,119
+prod_333962f2-00af-4e88-869d-ea21f92f14f8,Passiflore Gélules,85.1,supp_825fe84e-bf8e-4ffc-820a-e6cb8c77226f,241
+prod_095b48c2-d35f-4bdc-9972-3ac034127c1b,Lisinopril 10mg,120.09,supp_ad332097-74cd-4653-b363-60f5a546e621,12
+prod_04d4b730-666c-4f07-a37e-829369af27b0,Tensiomètre Électronique,54.01,supp_31cc3ce5-cbe1-4f32-9c42-88d3cf11c319,317
+prod_dd0bd224-277f-445a-8fd6-0e6e894c29f1,Amoxicilline 500mg,23.65,supp_a7416a42-948c-4bbc-8961-b8378bf9b1ae,452
+prod_df215473-bb81-4477-8ebd-f242a3742274,Fer 14mg,86.0,supp_d1167f35-4b90-4da4-bd46-84050693cc3a,482
+prod_7e2a59b3-a90d-4c4a-8daa-684397e38774,Oméprazole 20mg,79.78,supp_51a834de-de1c-43f7-9b72-0d773529d6aa,287
+prod_ff83e5ca-9cc7-49a9-843d-c1aecb6088cc,Bain de Bouche,2.32,supp_92e39561-455e-4b06-aece-c9116cbeef41,167
+prod_4c974351-cb48-4231-8ca6-ffbd7fdd3276,Seringues 5ml,131.04,supp_bee1ab3f-f76f-4b35-a7cd-16cf54b7c3d7,468
+prod_d341d380-9741-4999-ac9d-c83491ef47a0,Masque Chirurgical,84.53,supp_f75883d9-3f63-46de-a047-fa0df60f9fe4,312
+prod_6dcbb58c-667f-4b15-a26c-1882e1fe8b30,Biafine Crème,35.82,supp_d1bef76a-ab78-451e-827d-e0eb941416bc,113
+prod_705b0dd0-ed76-4cc5-8bf1-f1025affd989,Strepsils Pastilles,69.59,supp_45215b6c-8b99-4a36-ac0b-dfb888bbe703,331
+prod_aeabf628-773f-4b7d-8422-598c6fa96dde,Aspirine 500mg,50.76,supp_b024a8e4-db69-40a3-843a-a9299150a51b,32
+prod_4d697d70-1d9d-45db-b4a4-a8d7faf5b917,Vitamine D3 1000UI,128.51,supp_31cc3ce5-cbe1-4f32-9c42-88d3cf11c319,325
+prod_e6977200-7dd6-495b-a403-a78a0bc85eb2,Echinacée Gélules,107.03,supp_2184357d-70cb-457e-bb3d-fc2242ad95a1,421
+prod_f1266e20-d385-44a1-a59c-643d00fcd6b6,Sirop Toux Sèche,85.36,supp_c39b0715-be0c-4c81-8295-bf3c5c4f1789,237
+prod_4379d37a-e899-45aa-9784-abb72cbd918e,Oméga 3 Capsules,177.92,supp_5b94e0bf-59c9-42ef-b70f-6893e8189c65,465
+prod_c145d2cd-7aa7-4953-8e00-6ecf4e602ff6,Crème Hydratante Visage,87.46,supp_d1167f35-4b90-4da4-bd46-84050693cc3a,358
+prod_348845cf-422c-4f0f-95c9-5638b8f83f11,Spasfon 80mg,114.82,supp_83b951a8-cd41-47f0-98d5-7ebc8cd35eb7,154
+prod_92017df7-948a-4d68-9a8f-3df13f9e13dd,Aubépine Tisane,73.38,supp_825fe84e-bf8e-4ffc-820a-e6cb8c77226f,332
+prod_f49762dc-3471-4693-a388-9b6b191115c6,Bétadine Solution,42.39,supp_92e39561-455e-4b06-aece-c9116cbeef41,209
+prod_a221f7e0-cc4b-445d-b5d9-f5ab0b842c57,Pansements Adhésifs,32.06,supp_380511cb-8d24-4fa9-a0c9-30fc8cec41f6,59
+prod_80f29e05-a92d-4b8f-9fe6-4ae34c6d57a5,Valériane Comprimés,42.0,supp_eb379a89-1ba9-4809-941b-6c674fb270c1,71
+prod_c3de1fae-e5e6-46c1-91bd-138767976f88,Thermomètre Digital,13.57,supp_45215b6c-8b99-4a36-ac0b-dfb888bbe703,23
+prod_9e0da692-593c-4d3b-a063-2fe5d7d3ac86,Smecta Sachets,110.33,supp_b024a8e4-db69-40a3-843a-a9299150a51b,484
+prod_cb1a8024-a770-48ba-b14f-35f8c904fe57,Azithromycine 250mg,65.41,supp_06f4dbec-560a-4089-96dc-47cae388d49a,19
+prod_fdec0cd2-d917-41ee-8c6d-b05c315e5899,Millepertuis,102.55,supp_bbfa1b7a-d311-4b5f-911d-190b1ab27773,155
+prod_b1ee422c-8b40-4c79-a17a-49fb3493d337,Métronidazole 500mg,50.95,supp_825fe84e-bf8e-4ffc-820a-e6cb8c77226f,252
+prod_960162d2-772f-4c33-a0bc-68a6bbaa74ee,Compresses Stériles,85.93,supp_ecf96862-be55-452e-888a-545fadd49598,59
+prod_fd274a3f-5f1e-470c-8d41-1acb7a2d6733,Ciprofloxacine 500mg,24.45,supp_609be8c9-dfe5-45cd-b00a-54eee272c7e8,49
+prod_6b526bda-7435-4d5c-8f06-16a05b7f3c91,Salbutamol Spray,64.01,supp_eae0bd53-8b17-49e5-ae3d-ae08fafb3d73,120
+prod_9fbe0c1e-6432-40ea-998b-c72f3964b509,Pastilles Miel Citron,24.99,supp_eae0bd53-8b17-49e5-ae3d-ae08fafb3d73,454
+prod_e11acf7c-bf7e-4937-8559-233f573227d3,Insuline Glulisine,45.77,supp_ad332097-74cd-4653-b363-60f5a546e621,275
+prod_bac7e4a9-789c-4d06-9f84-9f5e18913118,Magnésium 300mg,63.92,supp_ed3d22f9-73fc-4cc8-b0d2-95027c22662d,69
+prod_f3f96901-1f2d-450f-8fd7-a95ff55590ea,Probiotiques Gélules,13.81,supp_a3d1a600-af33-4325-bb6d-2d8a84aa14d2,198
+prod_566b5f8a-f156-45eb-89d4-c980e9bf0c02,Vicks Vaporub 50g,28.12,supp_45215b6c-8b99-4a36-ac0b-dfb888bbe703,232
+prod_6196d6bf-4824-49f5-9fde-3acc341fe3bd,Dentifrice Fluoré,130.12,supp_df04937c-24ca-4619-9e54-0d2c54f97f46,189
+prod_adcf6bb1-ffb6-46ed-aabf-91f7d13aad5b,Gants Nitrile Boîte,125.86,supp_f75883d9-3f63-46de-a047-fa0df60f9fe4,343
+prod_46207b1f-58fc-4f3c-ba8c-c934a0dead4c,Amlodipine 5mg,14.15,supp_bbfa1b7a-d311-4b5f-911d-190b1ab27773,486
+prod_1abc136b-2108-4b08-be72-6cbff50fb7d0,Collyre Larmes Artificielles,79.22,supp_38ec6da5-d8e6-4609-8056-5112dc2329d5,380
+prod_0807f126-9bfe-4ca6-bd22-ec0f159614d9,Ginseng Extrait,145.82,supp_51a834de-de1c-43f7-9b72-0d773529d6aa,356
+prod_e5f85e54-342b-4812-91c1-3dc39d4cca8b,Vitamine C 1000mg,18.85,supp_825fe84e-bf8e-4ffc-820a-e6cb8c77226f,484
+prod_caa5e55c-7b8e-4600-887c-1934a3b8bbf4,Métformine 500mg,74.98,supp_825fe84e-bf8e-4ffc-820a-e6cb8c77226f,276
+prod_7d8b1eaa-08df-4d0c-b6f3-8cb4c1b96a8e,Fluticasone Nasal,68.75,supp_f2fee79d-ada6-4944-ba7b-c8f7f9b9a1a5,214
+prod_684edbac-ea7f-4c11-8b36-16b2c715259c,Camomille Sachets,23.54,supp_df04937c-24ca-4619-9e54-0d2c54f97f46,300
+prod_b8487e40-5596-4459-8500-72001785105c,Atorvastatine 20mg,18.04,supp_7225db0a-18f0-43cd-8894-6d5c6e364fbd,380
+prod_6d5e7f60-4111-4d8a-80c1-b7180338d59e,Ginkgo Biloba,163.58,supp_bd66f9df-025c-4d09-9e25-e73c44578abb,372
+prod_5eba16db-14b2-4e9c-8e4a-1301e907c740,Tilleul Infusion,15.08,supp_c8b0d807-4c37-47c5-b7e1-82e1bc96004b,79

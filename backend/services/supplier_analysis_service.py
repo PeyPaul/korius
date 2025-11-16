@@ -7,7 +7,12 @@ from typing import List, Optional
 import pandas as pd
 
 from backend.services.data_loader import get_data_loader
-from backend.services.models import CheaperAlternative, SupplierROI, SupplierROIResponse
+from backend.services.models import (
+    CheaperAlternative,
+    PerformanceBreakdown,
+    SupplierROI,
+    SupplierROIResponse,
+)
 
 
 class SupplierAnalysisService:
@@ -218,9 +223,10 @@ class SupplierAnalysisService:
 
             # Calculate performance score (0-100)
             # Factors: delivery performance (40%), price competitiveness (30%), order volume (20%), product diversity (10%)
-            price_score = max(
-                0, 100 - (cheaper_alternatives_count / max(1, product_count)) * 30
-            )
+            # Price score: penalize based on ratio of products with cheaper alternatives
+            # More aggressive penalty: up to 50 points (was 30), so 100% cheaper alternatives = 50% score
+            cheaper_ratio = cheaper_alternatives_count / max(1, product_count)
+            price_score = max(0, 100 - (cheaper_ratio * 50))
             volume_score = (
                 min(100, (monthly_spend / 1000) * 20) if monthly_spend > 0 else 0
             )
@@ -261,6 +267,30 @@ class SupplierAnalysisService:
             if total_deliveries == 0 and monthly_spend == 0:
                 issues.append("No Recent Activity")
 
+            # Create performance breakdown
+            on_time_deliveries = supplier_on_time_deliveries.get(supplier_id, 0)
+            late_deliveries = supplier_late_deliveries.get(supplier_id, 0)
+            on_time_rate = (
+                (on_time_deliveries / total_deliveries * 100)
+                if total_deliveries > 0
+                else 100.0
+            )
+
+            performance_breakdown = PerformanceBreakdown(
+                delivery_score=round(delivery_score, 1),
+                delivery_on_time_rate=round(on_time_rate, 1),
+                delivery_total_deliveries=total_deliveries,
+                delivery_on_time=on_time_deliveries,
+                delivery_late=late_deliveries,
+                price_score=round(price_score, 1),
+                price_cheaper_alternatives=cheaper_alternatives_count,
+                price_product_count=product_count,
+                volume_score=round(volume_score, 1),
+                volume_monthly_spend=round(monthly_spend, 2),
+                diversity_score=round(diversity_score, 1),
+                diversity_product_count=product_count,
+            )
+
             supplier_roi_list.append(
                 SupplierROI(
                     id=supplier.id,
@@ -271,6 +301,7 @@ class SupplierAnalysisService:
                     trend=trend,
                     issues=issues,
                     phone_number=supplier.phone_number,
+                    performance_breakdown=performance_breakdown,
                 )
             )
 

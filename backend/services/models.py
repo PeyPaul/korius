@@ -117,6 +117,40 @@ class Order(BaseModel):
     new_delivery_time: int | None = None
 
 
+class PerformanceBreakdown(BaseModel):
+    """Detailed breakdown of performance calculation."""
+
+    delivery_score: float = Field(
+        ge=0, le=100, description="Delivery performance score (0-100)"
+    )
+    delivery_on_time_rate: float = Field(
+        ge=0, le=100, description="On-time delivery rate (%)"
+    )
+    delivery_total_deliveries: int = Field(
+        ge=0, description="Total number of deliveries"
+    )
+    delivery_on_time: int = Field(ge=0, description="Number of on-time deliveries")
+    delivery_late: int = Field(ge=0, description="Number of late deliveries")
+
+    price_score: float = Field(
+        ge=0, le=100, description="Price competitiveness score (0-100)"
+    )
+    price_cheaper_alternatives: int = Field(
+        ge=0, description="Number of cheaper alternatives found"
+    )
+    price_product_count: int = Field(
+        ge=0, description="Number of products from this supplier"
+    )
+
+    volume_score: float = Field(ge=0, le=100, description="Order volume score (0-100)")
+    volume_monthly_spend: float = Field(ge=0, description="Monthly spend amount")
+
+    diversity_score: float = Field(
+        ge=0, le=100, description="Product diversity score (0-100)"
+    )
+    diversity_product_count: int = Field(ge=0, description="Number of unique products")
+
+
 class SupplierROI(BaseModel):
     """Model for supplier ROI and performance metrics."""
 
@@ -128,6 +162,9 @@ class SupplierROI(BaseModel):
     trend: str = Field(description="Trend: up, stable, down")
     issues: List[str] = Field(default_factory=list, description="List of active issues")
     phone_number: str
+    performance_breakdown: Optional[PerformanceBreakdown] = Field(
+        None, description="Detailed breakdown of performance calculation"
+    )
 
 
 class SupplierROIResponse(BaseModel):

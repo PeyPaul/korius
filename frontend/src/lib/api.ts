@@ -64,6 +64,21 @@ export interface SupplierOptionsResponse {
   current_supplier_id: string;
 }
 
+export interface PerformanceBreakdown {
+  delivery_score: number;
+  delivery_on_time_rate: number;
+  delivery_total_deliveries: number;
+  delivery_on_time: number;
+  delivery_late: number;
+  price_score: number;
+  price_cheaper_alternatives: number;
+  price_product_count: number;
+  volume_score: number;
+  volume_monthly_spend: number;
+  diversity_score: number;
+  diversity_product_count: number;
+}
+
 export interface SupplierROI {
   id: string;
   name: string;
@@ -73,6 +88,7 @@ export interface SupplierROI {
   trend: 'up' | 'stable' | 'down';
   issues: string[];
   phone_number: string;
+  performance_breakdown?: PerformanceBreakdown;
 }
 
 export interface SupplierROIResponse {
