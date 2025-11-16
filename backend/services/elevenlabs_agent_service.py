@@ -124,6 +124,8 @@ def call_agent(
     # Start conversation with the agent using callbacks to capture transcript
     if agent_name == "delivery":
         agent_id = os.getenv("AGENT_DELIVERY_ID")
+    elif agent_name == "availability":
+        agent_id = os.getenv("AGENT_AVAILABILITY_ID")
     else:  # agent_name == "products":
         agent_id = os.getenv("AGENT_PRODUCTS_ID")
 
