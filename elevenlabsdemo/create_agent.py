@@ -20,9 +20,14 @@
 #     }
 # )
 
+import os
 from elevenlabs import ElevenLabs
+from dotenv import load_dotenv
 
-client = ElevenLabs(api_key="sk_acc9ecd482027239bd81b5f096013a5c7c0476a130e6aecd")
+# Load environment variables
+load_dotenv()
+
+client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 
 agent = client.conversational_ai.agents.create(
     name="Mon Agent",

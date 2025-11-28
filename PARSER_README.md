@@ -17,10 +17,13 @@ pip install -e .
 
 ### 2. Configurer la clé API Mistral
 
-Créez un fichier `.env` à la racine du projet :
+Créez un fichier `.env` dans le dossier **backend** :
 
 ```bash
+cd backend
+cat > .env << EOF
 MISTRAL_API_KEY=votre_cle_api_mistral
+EOF
 ```
 
 Vous pouvez obtenir votre clé API sur [console.mistral.ai](https://console.mistral.ai/)

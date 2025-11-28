@@ -151,6 +151,118 @@ The result is a **single pane of glass** for monitoring supplier performance, ma
 
 ---
 
+## How to Test It
+
+### Prerequisites
+
+Before getting started, you'll need:
+- Python 3.10 or higher
+- Node.js and npm
+- A Mistral AI API key (get one at [console.mistral.ai](https://console.mistral.ai/))
+
+### Step 1: Configure Your API Keys
+
+Create a `.env` file in the **backend** directory with your Mistral API key:
+
+```bash
+cd backend
+cat > .env << EOF
+MISTRAL_API_KEY=your_mistral_api_key_here
+EOF
+```
+
+This key is essential for the AI-powered conversation parsing feature.
+
+### Step 2: Install Dependencies
+
+From the project root, install all dependencies using make:
+
+```bash
+make install
+```
+
+This will install both backend (Python) and frontend (Node.js) dependencies.
+
+### Step 3: Launch the Application
+
+Start both the backend API and the frontend UI:
+
+```bash
+make dev
+```
+
+The application will be available at:
+- **Frontend UI**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+
+You can now explore the Control Tower dashboard, view supplier analytics, and see AI-powered insights!
+
+### Step 4: Test the Mistral AI Parser (Recommended)
+
+To see Mistral AI in action, test the conversation parser that analyzes supplier call transcripts:
+
+```bash
+make test-parser
+```
+
+This will:
+- Parse a sample phone conversation with a supplier
+- Extract structured information (product names, prices, delivery times)
+- Demonstrate how Mistral AI understands and structures unstructured conversations
+
+This is the **core feature** that showcases the power of Mistral AI in automating procurement workflows.
+
+### Optional: Test AI Phone Calls with ElevenLabs (Advanced)
+
+If you want to test the complete AI phone agent that can actually call suppliers:
+
+#### Prerequisites
+- An ElevenLabs API key (get one at [elevenlabs.io](https://elevenlabs.io/))
+- A Twilio phone number configured for voice calls
+- ElevenLabs Conversational AI agent configured in your [ElevenLabs Studio](https://elevenlabs.io/app/conversational-ai)
+
+#### Configuration
+
+Add your ElevenLabs API key to the `.env` file in the **backend** directory:
+
+```bash
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+TWILIO_PHONE_NUMBER=your_twilio_phone_number
+```
+
+#### Create an AI Agent
+
+Run the agent creation script to set up an AI phone agent:
+
+```bash
+cd elevenlabsdemo
+python create_agent.py
+```
+
+This will create a conversational AI agent configured to:
+- Answer incoming calls from suppliers
+- Ask about product updates, pricing changes, and delivery times
+- Record and transcribe the entire conversation
+
+#### Connect to Twilio
+
+1. In your [Twilio Console](https://console.twilio.com/), configure your phone number's webhook
+2. Point the voice webhook to your ElevenLabs agent endpoint
+3. Set up the ElevenLabs agent in your [ElevenLabs Studio](https://elevenlabs.io/app/conversational-ai) with the Twilio integration
+
+#### Make a Test Call
+
+Once configured, you can:
+- Call your Twilio number to simulate a supplier call
+- The AI agent will answer and conduct a conversation
+- The transcript is automatically parsed by Mistral AI
+- Product updates are extracted and saved to the database
+
+This demonstrates the complete end-to-end workflow: AI phone agent → conversation transcript → Mistral AI parsing → structured data extraction.
+
+---
+
 ## Next Steps
 
 Natural next steps:
