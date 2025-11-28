@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("ANTHROPIC_API_KEY")
+api_key = os.getenv("MISTRAL_API_KEY")
 
 # Ajouter le répertoire parent au path pour les imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -66,16 +66,16 @@ def test_conversation_parser():
     print()
 
     # Vérifier que la clé API est configurée
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("MISTRAL_API_KEY")
     if not api_key:
         print(
-            "❌ ERREUR: La variable d'environnement ANTHROPIC_API_KEY n'est pas définie."
+            "❌ ERREUR: La variable d'environnement MISTRAL_API_KEY n'est pas définie."
         )
         print()
         print("Pour configurer votre clé API:")
         print("1. Créez un fichier .env à la racine du projet")
-        print("2. Ajoutez la ligne: ANTHROPIC_API_KEY=votre_cle_api")
-        print("3. Ou exportez la variable: export ANTHROPIC_API_KEY=votre_cle_api")
+        print("2. Ajoutez la ligne: MISTRAL_API_KEY=votre_cle_api")
+        print("3. Ou exportez la variable: export MISTRAL_API_KEY=votre_cle_api")
         print()
         return
 

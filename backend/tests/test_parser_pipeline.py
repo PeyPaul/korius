@@ -12,7 +12,7 @@ from backend.services.transcript_parser_service import TranscriptParserService
 
 load_dotenv()
 
-api_key = os.getenv("ANTHROPIC_API_KEY")
+api_key = os.getenv("MISTRAL_API_KEY")
 
 
 @pytest.fixture

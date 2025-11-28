@@ -628,9 +628,9 @@ def call_agent_background(
 
         # Automatically parse the conversation and update CSVs based on agent type
         try:
-            anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-            if not anthropic_api_key:
-                print("⚠ ANTHROPIC_API_KEY not set, skipping automatic parsing")
+            mistral_api_key = os.getenv("MISTRAL_API_KEY")
+            if not mistral_api_key:
+                print("⚠ MISTRAL_API_KEY not set, skipping automatic parsing")
             else:
                 # Get the saved transcript data
                 transcript_data = {
@@ -653,7 +653,7 @@ def call_agent_background(
                         ]
                     )
 
-                    parser = OrderDeliveryParser(api_key=anthropic_api_key)
+                    parser = OrderDeliveryParser(api_key=mistral_api_key)
                     parsed_updates = parser.parse_conversation(
                         transcript=transcript_text,
                         supplier_name=result.get("supplier_name", supplier_name),
@@ -690,7 +690,7 @@ def call_agent_background(
                     # Use TranscriptParserService for product conversations
 
                     parser = TranscriptParserService(
-                        api_key=anthropic_api_key, data_dir="./data"
+                        api_key=mistral_api_key, data_dir="./data"
                     )
                     parsed_result = parser.parse_and_update_csv(
                         transcript_data,

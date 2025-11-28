@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-import anthropic
+from mistralai import Mistral
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -23,7 +23,7 @@ class TranscriptParserService:
     Parses phone conversation transcripts to extract product price and delivery time updates,
     and optionally updates CSV files with the parsed information.
 
-    This class uses Claude API from Anthropic to analyze conversation transcripts
+    This class uses Mistral AI to analyze conversation transcripts
     and extract structured product information updates. It can also convert parsed
     results to ModifiedProductInformation format and update CSV files.
     """
@@ -34,19 +34,19 @@ class TranscriptParserService:
         data_dir: Optional[Path] = None,
     ):
         """
-        Initialize the conversation parser with Claude API.
+        Initialize the conversation parser with Mistral AI.
 
         Args:
-            api_key: Anthropic API key. If not provided, will use ANTHROPIC_API_KEY env variable.
+            api_key: Mistral API key. If not provided, will use MISTRAL_API_KEY env variable.
             data_dir: Path to the data directory. If None, uses ../data relative to this file.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("MISTRAL_API_KEY")
         if not self.api_key:
             raise ValueError(
-                "API key must be provided either as parameter or ANTHROPIC_API_KEY environment variable"
+                "API key must be provided either as parameter or MISTRAL_API_KEY environment variable"
             )
 
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        self.client = Mistral(api_key=self.api_key)
 
         # Initialize data directory and loader for CSV operations
         if data_dir is None:
@@ -205,26 +205,25 @@ class TranscriptParserService:
         print(prompt)
 
         try:
-            message = self.client.messages.create(
-                model="claude-haiku-4-5",
-                max_tokens=2048,
+            response = self.client.chat.complete(
+                model="mistral-large-latest",
                 messages=[{"role": "user", "content": prompt}],
             )
 
             # Extract the response text
-            response_text = message.content[0].text
+            response_text = response.choices[0].message.content
             print(response_text)
             # Parse the structured response
-            result = self._parse_claude_response(response_text, supplier_name)
+            result = self._parse_mistral_response(response_text, supplier_name)
             print(result)
             return result
 
         except Exception as e:
-            raise Exception(f"Error calling Claude API: {str(e)}")
+            raise Exception(f"Error calling Mistral AI API: {str(e)}")
 
     def _build_prompt(self, transcript: str, supplier_name: str) -> str:
         """
-        Build the prompt for Claude API.
+        Build the prompt for Mistral AI.
 
         Args:
             transcript: The conversation transcript
@@ -270,14 +269,14 @@ Réponds UNIQUEMENT avec le JSON, sans texte additionnel."""
 
         return prompt
 
-    def _parse_claude_response(
+    def _parse_mistral_response(
         self, response: str, supplier_name: str
     ) -> Dict[str, Dict[str, float]]:
         """
-        Parse Claude's response into the expected format.
+        Parse Mistral's response into the expected format.
 
         Args:
-            response: Raw response from Claude
+            response: Raw response from Mistral
             supplier_name: Supplier name to append to product names
 
         Returns:

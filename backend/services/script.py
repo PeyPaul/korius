@@ -53,16 +53,16 @@ def main():
         "--api-key",
         type=str,
         default=None,
-        help="Anthropic API key (default: from ANTHROPIC_API_KEY env variable)",
+        help="Mistral API key (default: from MISTRAL_API_KEY env variable)",
     )
 
     args = parser.parse_args()
 
     # Get API key
-    api_key = args.api_key or os.getenv("ANTHROPIC_API_KEY")
+    api_key = args.api_key or os.getenv("MISTRAL_API_KEY")
     if not api_key:
         print(
-            "Error: API key must be provided via --api-key or ANTHROPIC_API_KEY environment variable"
+            "Error: API key must be provided via --api-key or MISTRAL_API_KEY environment variable"
         )
         sys.exit(1)
 

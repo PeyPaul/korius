@@ -15,15 +15,15 @@ cd backend
 pip install -e .
 ```
 
-### 2. Configurer la clé API Anthropic
+### 2. Configurer la clé API Mistral
 
 Créez un fichier `.env` à la racine du projet :
 
 ```bash
-ANTHROPIC_API_KEY=votre_cle_api_anthropic
+MISTRAL_API_KEY=votre_cle_api_mistral
 ```
 
-Vous pouvez obtenir votre clé API sur [console.anthropic.com](https://console.anthropic.com/)
+Vous pouvez obtenir votre clé API sur [console.mistral.ai](https://console.mistral.ai/)
 
 ## 📖 Utilisation
 
@@ -95,7 +95,7 @@ Réponse :
 Un script de test complet est fourni :
 
 ```bash
-export ANTHROPIC_API_KEY=votre_cle_api
+export MISTRAL_API_KEY=votre_cle_api
 cd backend
 python test_parser.py
 ```
@@ -143,7 +143,7 @@ backend/
 ```python
 class ConversationParser:
     def __init__(self, api_key: Optional[str] = None):
-        """Initialise avec la clé API Anthropic"""
+        """Initialise avec la clé API Mistral"""
         
     def parse_conversation(
         self, 
@@ -204,7 +204,7 @@ import os
 from backend.services.parser_service import ConversationParser
 
 # Configuration
-os.environ["ANTHROPIC_API_KEY"] = "votre_cle"
+os.environ["MISTRAL_API_KEY"] = "votre_cle"
 parser = ConversationParser()
 
 # Conversation
@@ -235,9 +235,9 @@ print(updates)
 
 ### Erreur : "API key must be provided"
 
-→ Vérifiez que `ANTHROPIC_API_KEY` est défini dans votre environnement
+→ Vérifiez que `MISTRAL_API_KEY` est défini dans votre environnement
 
-### Erreur : "Import anthropic could not be resolved"
+### Erreur : "Import mistralai could not be resolved"
 
 → Réinstallez les dépendances : `pip install -e .`
 
@@ -247,7 +247,7 @@ print(updates)
 
 ## 📚 Technologies Utilisées
 
-- **Claude 3.5 Sonnet** (Anthropic) : Modèle LLM pour l'analyse de texte
+- **Mistral Large** (Mistral AI) : Modèle LLM pour l'analyse de texte
 - **FastAPI** : Framework API REST
 - **Pydantic** : Validation de données
 - **Python 3.10+**

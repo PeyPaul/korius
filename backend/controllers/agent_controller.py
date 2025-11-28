@@ -285,8 +285,8 @@ async def parse_completed_conversation(task_id: str):
         )
 
     # Parse the conversation
-    anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-    parser = TranscriptParserService(api_key=anthropic_api_key, data_dir="./data")
+    mistral_api_key = os.getenv("MISTRAL_API_KEY")
+    parser = TranscriptParserService(api_key=mistral_api_key, data_dir="./data")
 
     try:
         result = parser.parse_and_update_csv(

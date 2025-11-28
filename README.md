@@ -68,7 +68,7 @@ The result is a **single pane of glass** for monitoring supplier performance, ma
 
 ### AI Call & Transcript Parsing
 
-- Uses Anthropic Claude to analyze **real call transcripts** between the pharmacy and suppliers.
+- Uses Mistral AI to analyze **real call transcripts** between the pharmacy and suppliers.
 - Extracts structured fields such as:
   - Updated estimated delivery dates
   - Delay/advance in days vs the original ETA
@@ -100,7 +100,7 @@ The result is a **single pane of glass** for monitoring supplier performance, ma
 
 3. **AI agent conversations**  
    Phone calls with suppliers are transcribed into JSON files.  
-   The `OrderDeliveryParser` service uses Claude to:
+   The `OrderDeliveryParser` service uses Mistral AI to:
    - Read the transcript
    - Detect product-by-product delivery changes
    - Produce structured JSON with new dates and delays.
@@ -140,7 +140,7 @@ The result is a **single pane of glass** for monitoring supplier performance, ma
   - Serves as the orchestration layer between:
     - Local CSV data (`data/` directory)
     - Analysis services (supplier performance and margin analysis, cheaper alternatives, product discovery)
-    - Optional AI agents (Anthropic Claude, ElevenLabs) for call parsing
+    - Optional AI agents (Mistral AI, ElevenLabs) for call parsing
 
 - **Data layer**: Ingested from CSVs under `data/`  
   - `fournisseur.csv`: suppliers  

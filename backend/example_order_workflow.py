@@ -37,9 +37,9 @@ def complete_order_workflow_example():
     print("📋 ÉTAPE 1: Configuration")
     print("-" * 80)
 
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("MISTRAL_API_KEY")
     if not api_key:
-        print("❌ ERREUR: ANTHROPIC_API_KEY non définie")
+        print("❌ ERREUR: MISTRAL_API_KEY non définie")
         print("Définissez la variable d'environnement ou créez un fichier .env")
         return
 
@@ -75,7 +75,7 @@ def complete_order_workflow_example():
     print()
 
     # ========== ÉTAPE 3: PARSING ==========
-    print("🤖 ÉTAPE 3: Analyse avec Claude")
+    print("🤖 ÉTAPE 3: Analyse avec Mistral AI")
     print("-" * 80)
 
     try:

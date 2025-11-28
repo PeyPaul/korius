@@ -4,7 +4,7 @@ import os
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 
-import anthropic
+from mistralai import Mistral
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -12,8 +12,8 @@ from pathlib import Path
 env_path = Path(__file__).parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
-print(f"DEBUG - API Key loaded: {os.getenv('ANTHROPIC_API_KEY')}")
-print(f"DEBUG - API Key length: {len(os.getenv('ANTHROPIC_API_KEY') or '')}")
+print(f"DEBUG - API Key loaded: {os.getenv('MISTRAL_API_KEY')}")
+print(f"DEBUG - API Key length: {len(os.getenv('MISTRAL_API_KEY') or '')}")
 print(f"DEBUG - .env path: {env_path}")
 
 
@@ -21,23 +21,23 @@ class OrderDeliveryParser:
     """
     Parses phone conversation transcripts to extract order delivery updates.
 
-    This class uses Claude API from Anthropic to analyze conversation transcripts
+    This class uses Mistral AI to analyze conversation transcripts
     and extract order delivery time updates (estimated_time_arrival).
     """
 
     def __init__(self, api_key: Optional[str] = None):
         """
-        Initialize the order delivery parser with Claude API.
+        Initialize the order delivery parser with Mistral AI.
 
         Args:
-            api_key: Anthropic API key. If not provided, will use ANTHROPIC_API_KEY env variable.
+            api_key: Mistral API key. If not provided, will use MISTRAL_API_KEY env variable.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("MISTRAL_API_KEY")
         if not self.api_key:
             raise ValueError(
-                "API key must be provided either as parameter or ANTHROPIC_API_KEY environment variable"
+                "API key must be provided either as parameter or MISTRAL_API_KEY environment variable"
             )
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        self.client = Mistral(api_key=self.api_key)
 
     def parse_conversation(
         self, transcript: str, supplier_name: str
@@ -68,25 +68,24 @@ class OrderDeliveryParser:
         prompt = self._build_prompt(transcript, supplier_name)
 
         try:
-            message = self.client.messages.create(
-                model="claude-haiku-4-5",
-                max_tokens=2048,
+            response = self.client.chat.complete(
+                model="mistral-large-latest",
                 messages=[{"role": "user", "content": prompt}],
             )
             # Extract the response text
-            response_text = message.content[0].text
+            response_text = response.choices[0].message.content
 
             # Parse the structured response
-            result = self._parse_claude_response(response_text, supplier_name)
+            result = self._parse_mistral_response(response_text, supplier_name)
 
             return result
 
         except Exception as e:
-            raise Exception(f"Error calling Claude API: {str(e)}")
+            raise Exception(f"Error calling Mistral AI API: {str(e)}")
 
     def _build_prompt(self, transcript: str, supplier_name: str) -> str:
         """
-        Build the prompt for Claude API.
+        Build the prompt for Mistral AI.
 
         Args:
             transcript: The conversation transcript
@@ -150,14 +149,14 @@ Réponds UNIQUEMENT avec le JSON, sans texte additionnel."""
 
         return prompt
 
-    def _parse_claude_response(
+    def _parse_mistral_response(
         self, response: str, supplier_name: str
     ) -> Dict[str, Dict[str, str]]:
         """
-        Parse Claude's response into the expected format.
+        Parse Mistral's response into the expected format.
 
         Args:
-            response: Raw response from Claude
+            response: Raw response from Mistral
             supplier_name: Supplier name to append to product names
 
         Returns:
@@ -230,7 +229,7 @@ if __name__ == "__main__":
 
     supplier_name = "Pharma Depot"
 
-    # Initialize parser (you would need to set ANTHROPIC_API_KEY env variable)
+    # Initialize parser (you would need to set MISTRAL_API_KEY env variable)
     try:
         parser = OrderDeliveryParser()
         result = parser.parse_conversation(
@@ -240,4 +239,4 @@ if __name__ == "__main__":
         print(json.dumps(result, indent=2, ensure_ascii=False))
     except ValueError as e:
         print(f"Error: {e}")
-        print("Please set ANTHROPIC_API_KEY environment variable")
+        print("Please set MISTRAL_API_KEY environment variable")

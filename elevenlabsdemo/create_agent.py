@@ -11,7 +11,7 @@
 #         "agent": {
 #             "prompt": "You are a helpful assistant...",
 #             "llm": {
-#                 "model": "claude-sonnet-4-5",
+#                 "model": "mistral-large-latest",
 #                 "temperature": 0.2
 #             },
 #             "language": "en",
